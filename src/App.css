@@ -1,0 +1,354 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+:root {
+  --font: 'Roboto', sans-serif;
+  --infont: 12px;
+
+  --top: #CAF4FF;
+  --bottom: #A0DEFF;
+  --footer: #5AB2FF;
+
+  --trans: all 0.4s ease-in-out;
+  --br: 3px;
+  --br2: 10px;
+}
+
+* {
+  margin: 0px;
+  padding: 0px;
+  border-radius: 0px;
+  font-family: var(--font);
+  font-size: var(--infont);
+  text-transform: capitalize;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  text-decoration: none;
+  border: none;
+}
+
+body {
+  background: white;
+}
+
+a {
+  cursor: pointer;
+  color: black;
+}
+
+li {
+  list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  color: black;
+}
+
+select,
+textarea,
+input {
+  padding: 10px;
+  border-radius: var(--br);
+  width: 100%;
+  border: 1px solid var(--footer);
+  color: var(--bottom);
+}
+
+textarea,
+input::placeholder {
+  color: var(--footer);
+}
+
+input,
+select,
+textarea:focus {
+  outline: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  display: none;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+}
+
+select::-webkit-scrollbar {
+  width: 15px;
+}
+
+select::-webkit-scrollbar-thumb {
+  background-color: var(--footer);
+  border-radius: var(--br2);
+}
+
+button {
+  width: fit-content;
+  cursor: pointer;
+  transition: var(--trans);
+  display: flex;
+  padding: 10px 30px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: var(--br);
+  background: var(--footer);
+  color: white;
+  border: 1px solid var(--footer);
+}
+
+button:hover {
+  background: white;
+  color: var(--footer);
+}
+
+button:focus {
+  outline: none;
+}
+
+
+
+
+
+
+/* ////////////// General styling ////////////// */
+
+.wh {
+  width: 100%;
+}
+
+.relative {
+  position: relative;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.centertext {
+  text-align: center;
+}
+
+/* gaps */
+
+.g5 {
+  gap: 5px;
+}
+
+.g10 {
+  gap: 10px;
+}
+
+.g15 {
+  gap: 15px;
+}
+
+.g20 {
+  gap: 20px;
+}
+
+/* flex */
+
+.flex {
+  display: flex;
+  flex-direction: row;
+}
+
+.flexcol {
+  display: flex;
+  flex-direction: column;
+}
+
+.center {
+  align-items: center;
+  justify-content: center;
+}
+
+.start {
+  align-items: start;
+  justify-content: start;
+}
+
+.end {
+  align-items: end;
+  justify-content: end;
+}
+
+.center-start {
+  align-items: center;
+  justify-content: start;
+}
+
+.start-center {
+  align-items: start;
+  justify-content: center;
+}
+
+.end-start {
+  align-items: end;
+  justify-content: start;
+}
+
+.start-end {
+  align-items: start;
+  justify-content: end;
+}
+
+.center-end {
+  align-items: center;
+  justify-content: end;
+}
+
+.end-center {
+  align-items: end;
+  justify-content: center;
+}
+
+.center-space{
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* colors */
+
+.black {
+  color: black;
+}
+
+.green {
+  color: rgb(0, 179, 0);
+}
+
+.red {
+  color: red;
+}
+
+.blue {
+  color: var(--footer);
+}
+
+/* outlines */
+
+.outline1 {
+  outline: 1px solid blue;
+}
+
+.outline2 {
+  outline: 1px solid limegreen;
+}
+
+.outline3 {
+  outline: 1px solid orange;
+}
+
+/* fonts */
+
+.headingBig {
+  font-size: 36px;
+  font-weight: 800;
+}
+
+.heading {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.headingSmol {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.textBig{
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.text {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.textSmol {
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.error {
+  font-size: 10px;
+  font-weight: 400;
+  color: rgb(255, 0, 123);
+  width: 100%;
+  padding: 0px 10px;
+}
+
+.failed {
+  filter: drop-shadow(5px 5px 3px rgb(255, 166, 166));
+  color: rgb(255, 0, 0);
+}
+
+.success {
+  filter: drop-shadow(5px 5px 3px rgb(167, 255, 167));
+  color: rgb(0, 189, 0);
+}
+
+/* hover disabled */
+
+.hover {
+  cursor: pointer;
+  opacity: 1;
+  transition: var(--trans);
+}
+
+.hover:hover {
+  opacity: 0.6;
+}
+
+.disabled {
+  background: rgb(207, 207, 207);
+  border: 1px solid rgb(207, 207, 207);
+}
+
+.disabled:hover {
+  background: white;
+  color: rgb(207, 207, 207);
+}
+
+
+
+
+
+
+/* ////////////// UI styling ////////////// */
+
+/* common */
+
+.page {
+  background: var(--top);
+  width: 100%;
+  padding: 60px 100px;
+  gap: 20px;
+}
+
+.pagebox10 {
+  width: 100%;
+  gap: 10px;
+}
+
+.pagebox15 {
+  width: 100%;
+  gap: 15px;
+}
+
+.pagebox20 {
+  width: 100%;
+  gap: 20px;
+}
+
+
+/* page specific */
