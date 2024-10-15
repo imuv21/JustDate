@@ -1,23 +1,32 @@
 import './App.css';
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Toaster } from 'react-hot-toast';
 
+//components
+import Loader from './components/Loader/Loader';
 const Protector = lazy(() => import('./components/Protector'));
 const Layout = lazy(() => import('./components/Layout'));
 
 //public
-// const Login = lazy(() => import('./pages/Login'));
-// const Signup = lazy(() => import('./pages/Signup'));
+const Login = lazy(() => import('./pages/auth/Login'));
+const Signup = lazy(() => import('./pages/auth/Signup'));
+const Otp = lazy(() => import('./pages/auth/Otp'));
 
 //private
 const Home = lazy(() => import('./pages/Home'));
 
-let user = true;
+
 
 function App() {
+
+  const user = useSelector((state) => state.auth.user);
+
   return (
     <BrowserRouter>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loader />}>
+        <Toaster />
         <Routes>
 
           {/* private */}
@@ -27,12 +36,16 @@ function App() {
 
           {/* public */}
           <Route element={<Protector user={!user} redirect='/' />}>
-            {/* <Route path='/login' element={<Login />} />
-            <Route path='/signup' element={<Signup />} /> */}
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+            <Route path='/verify-otp' element={<Otp />} />
           </Route>
 
+          {/* both */}
+          <Route path='/loader' element={<Loader />} />
+
           {/* not found */}
-          <Route path='*' element={<div className='page flex center'>Are you kidding me? Kuchh bhi!</div>} />
+          <Route path='*' element={<div className='page flex center wh'>Are you kidding me? Kuchh bhi!</div>} />
 
         </Routes>
       </Suspense>

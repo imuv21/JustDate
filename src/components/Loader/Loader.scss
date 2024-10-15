@@ -1,0 +1,61 @@
+
+@use 'sass:math';
+
+.loader {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.LoaderBalls {
+    width: 90px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__item {
+        $anim-drt: 0.4s;
+        $anim-ease: cubic-bezier(.6, .05, .15, .95);
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+
+        &:nth-child(1) {
+            animation: bouncing $anim-drt alternate infinite $anim-ease;
+            background: var(--codeFour);
+        }
+        
+        &:nth-child(2) {
+            animation: bouncing $anim-drt math.div($anim-drt, 4) alternate infinite $anim-ease backwards;
+            background: var(--codeThree);
+        }
+        
+        &:nth-child(3) {
+            animation: bouncing $anim-drt math.div($anim-drt, 2) alternate infinite $anim-ease backwards;
+            background: var(--codeTwo);
+        }       
+    }
+}
+
+@keyframes bouncing {
+    0% {
+        transform: translate3d(0, 10px, 0) scale(1.2, 0.85);
+    }
+
+    100% {
+        transform: translate3d(0, -20px, 0) scale(0.9, 1.1);
+    }
+}
+
+@media screen and (max-width: 720px) {
+    .LoaderBalls {
+        width: 60px;
+        
+        &__item {
+            width: 10px;
+            height: 10px;
+        }
+    }
+}

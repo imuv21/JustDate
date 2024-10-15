@@ -1,16 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 
 :root {
-  --font: 'Roboto', sans-serif;
-  --infont: 12px;
+  --font: "Pacifico", cursive;
+  --fontStyle: normal;
+  --inFont: 12px;
 
-  --top: #CAF4FF;
-  --bottom: #A0DEFF;
-  --footer: #5AB2FF;
+  --codeOne: #ffffff;
+  --codeTwo: #ebebeb;
+  --codeThree: #a1a1a1;
+  --codeFour: #000000;
 
   --trans: all 0.4s ease-in-out;
-  --br: 3px;
-  --br2: 10px;
+  --brOne: 3px;
+  --brTwo: 10px;
+  --brThree: 15px;
+  --border: 1px solid var(--codeTwo);
+  --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 * {
@@ -18,8 +23,9 @@
   padding: 0px;
   border-radius: 0px;
   font-family: var(--font);
-  font-size: var(--infont);
-  text-transform: capitalize;
+  font-size: var(--inFont);
+  font-style: var(--fontStyle);
+  text-transform: none;
   box-sizing: border-box;
   scroll-behavior: smooth;
   text-decoration: none;
@@ -27,12 +33,12 @@
 }
 
 body {
-  background: white;
+  background: var(--codeOne);
 }
 
 a {
   cursor: pointer;
-  color: black;
+  color: var(--codeFour);
 }
 
 li {
@@ -46,28 +52,24 @@ h4,
 h5,
 h6,
 p {
-  color: black;
+  color: var(--codeFour);
 }
 
 select,
 textarea,
 input {
   padding: 10px;
-  border-radius: var(--br);
+  border-radius: var(--brOne);
   width: 100%;
-  border: 1px solid var(--footer);
-  color: var(--bottom);
+  border: 1px solid var(--codeFour);
+  color: var(--codeFour);
+  background: transparent;
 }
 
+select,
 textarea,
 input::placeholder {
-  color: var(--footer);
-}
-
-input,
-select,
-textarea:focus {
-  outline: none;
+  color: var(--codeThree);
 }
 
 input::-webkit-outer-spin-button,
@@ -84,8 +86,8 @@ select::-webkit-scrollbar {
 }
 
 select::-webkit-scrollbar-thumb {
-  background-color: var(--footer);
-  border-radius: var(--br2);
+  background-color: var(--codeThree);
+  border-radius: var(--brTwo);
 }
 
 button {
@@ -93,24 +95,23 @@ button {
   cursor: pointer;
   transition: var(--trans);
   display: flex;
-  padding: 10px 30px;
   align-items: center;
   justify-content: center;
   text-align: center;
-  border-radius: var(--br);
-  background: var(--footer);
-  color: white;
-  border: 1px solid var(--footer);
+  border-radius: var(--brOne);
+  background: var(--codeFour);
+  color: var(--codeOne);
+  border: 1px solid var(--codeFour);
+  padding: 10px 30px;
 }
 
-button:hover {
-  background: white;
-  color: var(--footer);
-}
-
+select,
+textarea,
+input,
 button:focus {
   outline: none;
 }
+
 
 
 
@@ -210,27 +211,9 @@ button:focus {
   justify-content: center;
 }
 
-.center-space{
+.center-space {
   align-items: center;
   justify-content: space-between;
-}
-
-/* colors */
-
-.black {
-  color: black;
-}
-
-.green {
-  color: rgb(0, 179, 0);
-}
-
-.red {
-  color: red;
-}
-
-.blue {
-  color: var(--footer);
 }
 
 /* outlines */
@@ -249,22 +232,17 @@ button:focus {
 
 /* fonts */
 
-.headingBig {
-  font-size: 36px;
-  font-weight: 800;
-}
-
 .heading {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 800;
 }
 
 .headingSmol {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
 }
 
-.textBig{
+.textBig {
   font-size: 14px;
   font-weight: 400;
 }
@@ -282,7 +260,7 @@ button:focus {
 .error {
   font-size: 10px;
   font-weight: 400;
-  color: rgb(255, 0, 123);
+  color: red;
   width: 100%;
   padding: 0px 10px;
 }
@@ -309,46 +287,185 @@ button:focus {
   opacity: 0.6;
 }
 
-.disabled {
-  background: rgb(207, 207, 207);
-  border: 1px solid rgb(207, 207, 207);
-}
-
-.disabled:hover {
-  background: white;
-  color: rgb(207, 207, 207);
-}
-
-
-
-
 
 
 /* ////////////// UI styling ////////////// */
 
 /* common */
-
 .page {
-  background: var(--top);
+  background: var(--codeOne);
   width: 100%;
-  padding: 60px 100px;
-  gap: 20px;
+  height: 100vh;
+  padding: 40px 100px;
+  gap: 40px;
 }
 
-.pagebox10 {
+.minBox {
   width: 100%;
-  gap: 10px;
+  gap: 5px;
 }
 
-.pagebox15 {
+/* header */
+.mlink {
+  display: none;
+}
+
+.main-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 50px;
+  border-bottom: none !important;
+}
+
+.hover-div {
+  width: 120px;
+  background-color: var(--codeOne);
+  box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.1), -4px 0px 6px -2px rgba(0, 0, 0, 0.1), 4px 0px 6px -2px rgba(0, 0, 0, 0.1);
+  color: var(--codeOne);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  padding: 10px;
+  top: 49px;
+  left: 0;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+  border-radius: var(--brOne);
+}
+
+.hover-div.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.hover-div a {
   width: 100%;
+  padding: 5px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--codeThree);
+  transition: var(--trans);
+}
+
+.hover-div a:hover {
+  color: var(--codeFour);
+}
+
+/* page specific */
+/* auth pages */
+.authBox {
+  width: 100%;
+  max-width: 500px;
+  gap: 15px;
+  padding: 20px;
+  border: var(--border);
+  border-radius: var(--brThree);
+  background: linear-gradient(145deg, #e6e6e6, #ffffff);
+  box-shadow: 5px 5px 13px #d4d4d4, -5px -5px 13px #ffffff;
+}
+
+.headerBox{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 15px;
 }
 
-.pagebox20 {
-  width: 100%;
-  gap: 20px;
+.otpBox{
+  width: 50px;
+}
+
+.password span {
+  position: absolute;
+  right: 10px;
+  top: 30%;
+}
+
+.password span .MuiSvgIcon-root {
+  color: var(--codeThree);
+  cursor: pointer;
 }
 
 
-/* page specific */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* responsiveness */
+@media screen and (max-width: 1200px) {
+  /* Styles for screens up to 1200px */
+}
+
+@media screen and (max-width: 1024px) {
+  /* Styles for screens up to 1024px */
+}
+
+@media screen and (max-width: 960px) {
+
+  select,
+  textarea,
+  input {
+    padding: 5px 10px;
+  }
+  button {
+    padding: 5px 20px;
+  }
+
+  .heading {
+    font-size: 20px;
+    font-weight: 800;
+  }
+  .headingSmol {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .textBig {
+    font-size: 13px;
+    font-weight: 400;
+  }
+  .page {
+    padding: 20px 15px;
+    gap: 20px;
+  }
+  .otpBox{
+    width: 30px;
+  }
+}
+
+@media screen and (max-width: 840px) {
+  .main-div {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  /* Styles for screens up to 640px */
+}
+
+@media screen and (max-width: 480px) {
+  /* Styles for screens up to 480px */
+}

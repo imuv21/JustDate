@@ -1,14 +1,13 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './store.jsx';
 import { HelmetProvider } from 'react-helmet-async';
 import App from './App.jsx';
 
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <HelmetProvider>
@@ -16,13 +15,5 @@ createRoot(document.getElementById('root')).render(
         </HelmetProvider>
       </PersistGate>
     </Provider>
-  </StrictMode>,
+  </React.StrictMode>,
 );
-
-
-
-
-
-
-
-
