@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const signupUser = createAsyncThunk(
     'auth/signupUser',
@@ -114,7 +114,7 @@ export const updateProfile = createAsyncThunk(
 
             const response = await axios.put(`${BASE_URL}/auth/update-profile`, formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
             });

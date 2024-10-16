@@ -78,8 +78,33 @@ input::-webkit-inner-spin-button {
 }
 
 input[type="checkbox"] {
+  appearance: none;
+  /* For modern browsers */
+  -webkit-appearance: none;
+  /* For Safari */
+  -moz-appearance: none;
+  /* For Firefox */
+  width: 18px;
+  height: 18px;
   cursor: pointer;
+  border: 1px solid black;
+  background-color: white;
+  position: relative;
 }
+
+input[type="checkbox"]:checked {
+  background-color: black;
+}
+
+input[type="checkbox"]:checked::before {
+  content: '✔';
+  color: white;
+  font-size: 14px;
+  position: absolute;
+  left: 3.5px;
+  top: -4px;
+}
+
 
 select::-webkit-scrollbar {
   width: 15px;
@@ -295,7 +320,6 @@ button:focus {
 .page {
   background: var(--codeOne);
   width: 100%;
-  height: 100vh;
   padding: 40px 100px;
   gap: 40px;
 }
@@ -305,7 +329,79 @@ button:focus {
   gap: 5px;
 }
 
-/* header */
+/* popup */
+.popup {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(9, 9, 9, 0.732);
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 1;
+}
+
+.popup-wrapper {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 10px;
+  gap: 20px;
+  background: white;
+  padding: 15px 25px;
+  filter: drop-shadow(7px 7px 10px rgb(48, 48, 48));
+}
+
+.popup-btn {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.popup-btn .popup {
+  opacity: 0;
+  bottom: -10px;
+  transition: opacity 0.3s ease, bottom 0.3s ease;
+}
+
+.popup-btn.clicked .popup {
+  opacity: 1;
+  bottom: 0;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* header & footer */
+.footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  background-color: var(--codeTwo);
+}
+
 .mlink {
   display: none;
 }
@@ -360,7 +456,7 @@ button:focus {
 }
 
 /* page specific */
-/* auth pages */
+/* login & signup & otp & forgot password & profile */
 .authBox {
   width: 100%;
   max-width: 500px;
@@ -372,14 +468,14 @@ button:focus {
   box-shadow: 5px 5px 13px #d4d4d4, -5px -5px 13px #ffffff;
 }
 
-.headerBox{
+.headerBox {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 15px;
 }
 
-.otpBox{
+.otpBox {
   width: 50px;
 }
 
@@ -392,6 +488,44 @@ button:focus {
 .password span .MuiSvgIcon-root {
   color: var(--codeThree);
   cursor: pointer;
+}
+
+.profile {
+  width: 100%;
+  max-width: 600px;
+  gap: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+}
+
+.pagebox10 {
+  width: 100%;
+  gap: 10px;
+}
+
+.pagebox20 {
+  width: 100%;
+  gap: 20px;
+}
+
+.links {
+  width: 100%;
+  gap: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.links a img {
+  width: 30px;
+  height: 30px;
+  filter: saturate(0);
+}
+
+.filter {
+  filter: saturate(2) !important;
 }
 
 
@@ -431,6 +565,7 @@ button:focus {
   input {
     padding: 5px 10px;
   }
+
   button {
     padding: 5px 20px;
   }
@@ -439,19 +574,23 @@ button:focus {
     font-size: 20px;
     font-weight: 800;
   }
+
   .headingSmol {
     font-size: 15px;
     font-weight: 600;
   }
+
   .textBig {
     font-size: 13px;
     font-weight: 400;
   }
+
   .page {
     padding: 20px 15px;
     gap: 20px;
   }
-  .otpBox{
+
+  .otpBox {
     width: 30px;
   }
 }

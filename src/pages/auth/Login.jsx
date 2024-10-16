@@ -70,7 +70,7 @@ const Login = () => {
         <meta name="description" content="JustDate is a modern dating platform designed to help you meet real people seeking meaningful relationships. Join today and start connecting with like-minded individuals for friendship, romance, or commitment." />
         <link rel="canonical" href="https://justdate.netlify.app/login" />
       </Helmet>
-      <div className='page flex center'>
+      <div className='page flex center' style={{height: '100vh'}}>
         <form className="authBox flexcol center" onSubmit={handleLogin}>
           <h1 className="heading">Login to your account</h1>
 

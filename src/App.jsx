@@ -16,6 +16,7 @@ const Otp = lazy(() => import('./pages/auth/Otp'));
 
 //private
 const Home = lazy(() => import('./pages/Home'));
+const Profile = lazy(() => import('./pages/auth/Profile'));
 
 
 
@@ -32,6 +33,7 @@ function App() {
           {/* private */}
           <Route element={<Protector user={user} />}>
             <Route path='/' element={<Layout><Home /></Layout>} />
+            <Route path='/profile' element={<Layout><Profile /></Layout>} />
           </Route>
 
           {/* public */}

@@ -118,7 +118,7 @@ const Otp = () => {
                 <link rel="canonical" href="https://justdate.netlify.app/verify-otp" />
             </Helmet>
 
-            <div className='page flex center'>
+            <div className='page flex center' style={{height: '100vh'}}>
                 <div className="authBox flexcol center">
                     <h1 className="heading">Enter the OTP sent to your email</h1>
 

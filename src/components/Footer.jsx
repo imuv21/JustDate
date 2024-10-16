@@ -3,8 +3,8 @@ import React, { Fragment } from 'react'
 const Footer = () => {
     return (
         <Fragment>
-            <div className='flexcol center wh'>
-                <h1 className="text">Footer</h1>
+            <div className='footer'>
+                <h1 className="headingSmol">JustDate @ 2024</h1>
             </div>
         </Fragment>
     )
