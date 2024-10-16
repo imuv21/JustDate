@@ -40,8 +40,7 @@ const Profile = () => {
     });
 
     useEffect(() => {
-        console.log(user?.links?.[0].imdb?.url);
-        if (user) {
+        if (user && user.links?.length > 0) {
             setFormValues({
                 firstName: user.firstName,
                 lastName: user.lastName,
