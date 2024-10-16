@@ -25,6 +25,8 @@ const Profile = () => {
         event.preventDefault();
         setIsClickedFooter(false);
     }
+
+
     const [formValues, setFormValues] = useState({
         firstName: '',
         lastName: '',
@@ -104,6 +106,8 @@ const Profile = () => {
         }
     };
 
+
+
     useEffect(() => {
         const handleScroll = () => {
             if (isClickedFooter) {
@@ -150,23 +154,29 @@ const Profile = () => {
                             <p className="textBig">Password :</p>
                             <div className="textBig" style={{ cursor: 'pointer' }} onClick={seePassword}> {showPassword ? user.password : '***********'} </div>
                         </div>
-                       {user.interests && <div className="pagebox20 flex center-space">
+                        {user.interests && <div className="pagebox20 flex center-space">
                             <p className="textBig">Interests :</p>
                             <p className="textBig">{user.interests}</p>
                         </div>}
                         <div className="links">
-                            <a href={user.links?.[0].imdb?.url || "#"} target="_blank" rel="noopener noreferrer">
-                                <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070090/JustDate/icons8-imdb-an-online-database-of-information-related-to-films_-and-television-programs-100_sbkn70.png" className={user.links?.[0].imdb?.url ? 'filter' : ''} alt="imdb" />
-                            </a>
-                            <a href={user.links?.[0].insta?.url || "#"} target="_blank" rel="noopener noreferrer">
-                                <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070090/JustDate/icons8-instagram-100_tgb1t2.png" className={user.links?.[0].insta?.url ? 'filter' : ''} alt="instagram" />
-                            </a>
-                            <a href={user.links?.[0].twitter?.url || "#"} target="_blank" rel="noopener noreferrer">
-                                <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070081/JustDate/icons8-twitter-100_pukkbt.png" className={user.links?.[0].twitter?.url ? 'filter' : ''} alt="twitter" />
-                            </a>
-                            <a href={user.links?.[0].spotify?.url || "#"} target="_blank" rel="noopener noreferrer">
-                                <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070081/JustDate/icons8-spotify-100_wivbcr.png" className={user.links?.[0].spotify?.url ? 'filter' : ''} alt="spotify" />
-                            </a>
+                            {user.links?.length > 0 ? (
+                                <>
+                                    <a href={user.links[0].imdb?.url || "#"} target="_blank" rel="noopener noreferrer">
+                                        <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070090/JustDate/icons8-imdb-an-online-database-of-information-related-to-films_-and-television-programs-100_sbkn70.png" className={user.links[0].imdb?.url ? 'filter' : ''} alt="imdb" />
+                                    </a>
+                                    <a href={user.links[0].insta?.url || "#"} target="_blank" rel="noopener noreferrer">
+                                        <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070090/JustDate/icons8-instagram-100_tgb1t2.png" className={user.links[0].insta?.url ? 'filter' : ''} alt="instagram" />
+                                    </a>
+                                    <a href={user.links[0].twitter?.url || "#"} target="_blank" rel="noopener noreferrer">
+                                        <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070081/JustDate/icons8-twitter-100_pukkbt.png" className={user.links[0].twitter?.url ? 'filter' : ''} alt="twitter" />
+                                    </a>
+                                    <a href={user.links[0].spotify?.url || "#"} target="_blank" rel="noopener noreferrer">
+                                        <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070081/JustDate/icons8-spotify-100_wivbcr.png" className={user.links[0].spotify?.url ? 'filter' : ''} alt="spotify" />
+                                    </a>
+                                </>
+                            ) : (
+                                <p>No social links available</p>
+                            )}
                         </div>
                     </div>
 
