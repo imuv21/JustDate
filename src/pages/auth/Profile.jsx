@@ -26,7 +26,6 @@ const Profile = () => {
         setIsClickedFooter(false);
     }
 
-
     const [formValues, setFormValues] = useState({
         firstName: '',
         lastName: '',
@@ -40,18 +39,27 @@ const Profile = () => {
     });
 
     useEffect(() => {
-        if (user && user.links?.length > 0) {
-            setFormValues({
+        if (user) {
+            setFormValues(prevValues => ({
+                ...prevValues, 
                 firstName: user.firstName,
                 lastName: user.lastName,
-                interests: user.interests || '',
+                interests: user.interests || ''
+            }));
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if (user && user.links?.length > 0) {
+            setFormValues(prevValues => ({
+                ...prevValues,
                 links: {
-                    imdb: { url: user.links?.[0].imdb?.url || '', isPublic: user.links?.[0].imdb?.isPublic || false },
-                    insta: { url: user.links?.[0].insta?.url || '', isPublic: user.links?.[0].insta?.isPublic || false },
-                    twitter: { url: user.links?.[0].twitter?.url || '', isPublic: user.links?.[0].twitter?.isPublic || false },
-                    spotify: { url: user.links?.[0].spotify?.url || '', isPublic: user.links?.[0].spotify?.isPublic || false }
+                    imdb: { url: user.links[0].imdb?.url || '', isPublic: user.links[0].imdb?.isPublic || false },
+                    insta: { url: user.links[0].insta?.url || '', isPublic: user.links[0].insta?.isPublic || false },
+                    twitter: { url: user.links[0].twitter?.url || '', isPublic: user.links[0].twitter?.isPublic || false },
+                    spotify: { url: user.links[0].spotify?.url || '', isPublic: user.links[0].spotify?.isPublic || false }
                 }
-            });
+            }));
         }
     }, [user]);
 
@@ -104,8 +112,6 @@ const Profile = () => {
             setIsSubmitted(false);
         }
     };
-
-
 
     useEffect(() => {
         const handleScroll = () => {
