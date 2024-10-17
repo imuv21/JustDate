@@ -50,7 +50,7 @@ const Profile = () => {
     }, [user]);
 
     useEffect(() => {
-        if (user && user.links?.length > 0) {
+        if (user && user.links) {
             setFormValues(prevValues => ({
                 ...prevValues,
                 links: {
@@ -164,7 +164,7 @@ const Profile = () => {
                             <p className="textBig">{user.interests}</p>
                         </div>}
                         <div className="links">
-                            {user.links?.length > 0 ? (
+                            {user.links ? (
                                 <>
                                     <a href={user.links[0].imdb?.url || "#"} target="_blank" rel="noopener noreferrer">
                                         <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070090/JustDate/icons8-imdb-an-online-database-of-information-related-to-films_-and-television-programs-100_sbkn70.png" className={user.links[0].imdb?.url ? 'filter' : ''} alt="imdb" />
