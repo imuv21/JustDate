@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 
 //components
 import Loader from './components/Loader/Loader';
+const Rough = lazy(() => import('./components/Rough'));
 const Protector = lazy(() => import('./components/Protector'));
 const Layout = lazy(() => import('./components/Layout'));
 
@@ -41,6 +42,7 @@ function App() {
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<Signup />} />
             <Route path='/verify-otp' element={<Otp />} />
+            <Route path='/rough' element={<Rough />} />
           </Route>
 
           {/* both */}

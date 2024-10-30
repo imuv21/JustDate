@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logoutUser, deleteUser } from '../../slices/authSlice';
 
-import EastIcon from '@mui/icons-material/East';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import NewReleasesIcon from '@mui/icons-material/NewReleases';
@@ -29,14 +28,12 @@ const Header = () => {
             navigate('/login');
         }
     }
-
     const deleteAccount = async (e) => {
         e.preventDefault();
         try{
             const deleteResponse = await dispatch(deleteUser({ email: user.email, password: user.password })).unwrap();
             if (deleteResponse.status === 'success') {
                 toast(<div className='flex center g5'> < VerifiedIcon /> {deleteResponse.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'rgb(0, 189, 0)' }, className: 'success', ariaProps: { role: 'status', 'aria-live': 'polite' } });
-                await logout();
             } else {
                 toast(<div className='flex center g5'> < NewReleasesIcon /> {deleteResponse.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
             }
@@ -103,7 +100,7 @@ const Header = () => {
                             <span className="burger-line"></span>
                             <span className="burger-line"></span>
                         </div>
-                        <a href="/" className="brand"><img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1728990993/JustDate/Picsart_24-10-15_16-30-38-262_pomjlt.png" alt="JustDate" /></a>
+                        <a href="/" className="brand"><img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1728990993/JustDate/Assets/Picsart_24-10-15_16-30-38-262_pomjlt.png" alt="JustDate" /></a>
                     </div>
 
                     <div className="menu" id="menu">
@@ -117,7 +114,7 @@ const Header = () => {
                                     Account <KeyboardArrowDownIcon />
                                     <div className={`hover-div ${isHovered ? 'visible' : ''}`}>
                                         <a href='/profile' className='text'>Profile</a>
-                                        <a href='/matches' className='text'>Matches</a>
+                                        <a href='/chats' className='text'>Chats</a>
                                         <a href='/likes' className='text'>Likes</a>
                                         <a onClick={logout} className='text'>Logout</a>
                                         <a onClick={deleteAccount} className='text'>Delete Account</a>
@@ -125,14 +122,13 @@ const Header = () => {
                                 </a>
                             </li>
                             <li className="menu-item mlink"><a href="/profile" className="menu-link">Profile</a></li>
-                            <li className="menu-item mlink"><a href="/matches" className="menu-link">Matches</a></li>
+                            <li className="menu-item mlink"><a href="/chats" className="menu-link">Chats</a></li>
                             <li className="menu-item mlink"><a href="/likes" className="menu-link">Likes</a></li>
                             <li className="menu-item mlink"><a onClick={logout} className="menu-link">Logout</a></li>
                             <li className="menu-item mlink"><a onClick={deleteAccount} className="menu-link">Delete Account</a></li>
                         </ul>
                     </div>
-
-                    <a href="/contact-us" className="menu-block">Sign up &nbsp;&nbsp; <EastIcon /></a>
+                    {/* <a href="/contact-us" className="menu-block">Sign up &nbsp;&nbsp; <EastIcon /></a> */}
                 </nav>
             </header>
         </Fragment>

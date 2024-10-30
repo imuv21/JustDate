@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 :root {
-  --font: "Pacifico", cursive;
+  --font: "Inter", sans-serif;
   --fontStyle: normal;
   --inFont: 12px;
 
@@ -102,9 +102,8 @@ input[type="checkbox"]:checked::before {
   font-size: 14px;
   position: absolute;
   left: 3.5px;
-  top: -4px;
+  top: 0px;
 }
-
 
 select::-webkit-scrollbar {
   width: 15px;
@@ -136,10 +135,6 @@ input,
 button:focus {
   outline: none;
 }
-
-
-
-
 
 
 
@@ -313,22 +308,7 @@ button:focus {
 }
 
 
-
 /* ////////////// UI styling ////////////// */
-
-/* common */
-.page {
-  background: var(--codeOne);
-  width: 100%;
-  padding: 40px 100px;
-  gap: 40px;
-}
-
-.minBox {
-  width: 100%;
-  gap: 5px;
-}
-
 /* popup */
 .popup {
   width: 100%;
@@ -347,7 +327,9 @@ button:focus {
 }
 
 .popup-wrapper {
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -482,7 +464,7 @@ button:focus {
 .password span {
   position: absolute;
   right: 10px;
-  top: 30%;
+  top: 25%;
 }
 
 .password span .MuiSvgIcon-root {
@@ -492,12 +474,55 @@ button:focus {
 
 .profile {
   width: 100%;
-  max-width: 600px;
+  padding: 90px 0px 0px 0px;
+  gap: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  justify-content: center;
+}
+
+.subProfile {
+  width: 100%;
+  min-width: 300px;
+  padding: 10px;
   gap: 30px;
   display: flex;
   flex-direction: column;
   align-items: start;
   justify-content: center;
+}
+
+.subProfileTwo {
+  width: 100%;
+  min-width: 300px;
+  padding: 10px;
+  gap: 30px;
+}
+
+.showGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  margin-top: 20px;
+  gap: 10px;
+}
+.showItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+}
+.showItem img {
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+}
+.showItem .textSmol {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
 }
 
 .pagebox10 {
@@ -511,6 +536,7 @@ button:focus {
 }
 
 .links {
+  margin-top: 20px;
   width: 100%;
   gap: 20px;
   display: flex;
@@ -528,25 +554,47 @@ button:focus {
   filter: saturate(2) !important;
 }
 
+/* pagination */
+.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin-top: 20px;
+  gap: 20px;
+}
+
+.pagination button:disabled {
+  background-color: var(--codeTwo);
+  color: var(--codeThree);
+  border: 1px solid var(--codeThree);
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 1.2rem;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: var(--codeOne);
+  color: var(--codeFour);
+}
 
 
 
 
+/* common */
+.page {
+  background: var(--codeOne);
+  width: 100%;
+  padding: 40px 100px;
+  gap: 40px;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.minBox {
+  width: 100%;
+  gap: 5px;
+}
 
 
 /* responsiveness */
@@ -559,6 +607,15 @@ button:focus {
 }
 
 @media screen and (max-width: 960px) {
+
+  input[type="checkbox"]:checked::before {
+    content: '✔';
+    color: white;
+    font-size: 14px;
+    position: absolute;
+    left: 3.5px;
+    top: -2px;
+  }
 
   select,
   textarea,
@@ -593,6 +650,12 @@ button:focus {
   .otpBox {
     width: 30px;
   }
+
+  .password span {
+    position: absolute;
+    right: 10px;
+    top: 15%;
+  }
 }
 
 @media screen and (max-width: 840px) {
@@ -602,9 +665,24 @@ button:focus {
 }
 
 @media screen and (max-width: 640px) {
-  /* Styles for screens up to 640px */
+  .profile {
+    width: 100%;
+    padding: 90px 0px 0px 0px;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+  }
+  .pagination {
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+  }
 }
 
-@media screen and (max-width: 480px) {
-  /* Styles for screens up to 480px */
+@media screen and (max-width: 550px) {
+  .profile {
+    padding: 50px 0px 0px 0px;
+  }
 }
