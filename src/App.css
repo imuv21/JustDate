@@ -336,9 +336,9 @@ button:focus {
   justify-content: center;
   text-align: center;
   border-radius: 10px;
-  gap: 20px;
+  gap: 5px;
   background: white;
-  padding: 15px 25px;
+  padding: 15px;
   filter: drop-shadow(7px 7px 10px rgb(48, 48, 48));
 }
 
@@ -474,7 +474,6 @@ button:focus {
 
 .profile {
   width: 100%;
-  padding: 90px 0px 0px 0px;
   gap: 20px;
   display: flex;
   flex-direction: row;
@@ -501,28 +500,48 @@ button:focus {
 }
 
 .showGrid {
+  height: 500px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   margin-top: 20px;
   gap: 10px;
+  overflow-x: scroll;
 }
+
+.showGrid::-webkit-scrollbar {
+  width: 5px;
+}
+
+.showGrid::-webkit-scrollbar-thumb {
+  background-color: var(--codeTwo);
+  border-radius: var(--brTwo);
+}
+
+
 .showItem {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: start;
 }
+
 .showItem img {
   width: 100%;
   height: 150px;
   object-fit: contain;
 }
+
 .showItem .textSmol {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 5px;
+}
+
+.pagebox5 {
+  width: 100%;
+  gap: 5px;
 }
 
 .pagebox10 {
@@ -535,23 +554,55 @@ button:focus {
   gap: 20px;
 }
 
+.locationDropdown {
+  position: absolute;
+  z-index: 1;
+  background: var(--codeOne);
+  border: 1px solid #ccc;
+  width: 100%;
+  max-height: 150px;
+  overflow-y: auto;
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+.interestsCont {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  gap: 10px;
+}
+
+.interests {
+  width: 100%;
+  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+.interests p {
+  padding: 10px;
+  background-color: var(--codeTwo);
+  border-radius: 5px;
+}
+
 .links {
-  margin-top: 20px;
+  margin-top: 10px;
   width: 100%;
   gap: 20px;
   display: flex;
   align-items: center;
   justify-content: start;
 }
-
 .links a img {
   width: 30px;
   height: 30px;
   filter: saturate(0);
-}
-
-.filter {
-  filter: saturate(2) !important;
 }
 
 /* pagination */
@@ -582,13 +633,91 @@ button:focus {
 
 
 
+/* discover page  */
+.discoverGrid {
+  width: 100%;
+  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+.disGridItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 10px;
+  gap: 10px;
+  border: 1px solid gray;
+  border-radius: 5px;
+}
+
+.details {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: flex-start;
+  gap: 20px;
+}
+.subdetail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+.subdetail .MuiSvgIcon-root {
+  width: 18px;
+  height: 18px;
+}
+
+.likeButton{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.likeButton .MuiSvgIcon-root {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+.likeButton .MuiSvgIcon-root.disabled {
+  cursor: not-allowed; 
+  opacity: 0.5; 
+}
+
+.linksTwo {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.linksTwo div a img {
+  width: 20px;
+  height: 20px;
+  filter: saturate(0);
+}
+
+.interestsTwo {
+  width: 100%;
+  gap: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+.interestsTwo p {
+  padding: 5px;
+  background-color: var(--codeTwo);
+  border-radius: 5px;
+}
+
 
 /* common */
 .page {
   background: var(--codeOne);
   width: 100%;
-  padding: 40px 100px;
-  gap: 40px;
+  padding: 100px 100px 40px 100px;
+  gap: 30px;
 }
 
 .minBox {
@@ -643,7 +772,7 @@ button:focus {
   }
 
   .page {
-    padding: 20px 15px;
+    padding: 100px 15px 20px 15px;
     gap: 20px;
   }
 
@@ -667,13 +796,13 @@ button:focus {
 @media screen and (max-width: 640px) {
   .profile {
     width: 100%;
-    padding: 90px 0px 0px 0px;
     gap: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: start;
   }
+
   .pagination {
     justify-content: center;
     align-items: center;
@@ -682,7 +811,7 @@ button:focus {
 }
 
 @media screen and (max-width: 550px) {
-  .profile {
-    padding: 50px 0px 0px 0px;
+  .page {
+    padding: 50px 15px 20px 15px;
   }
 }

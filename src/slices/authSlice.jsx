@@ -139,6 +139,36 @@ export const updateProfile = createAsyncThunk(
     }
 );
 
+export const updateDetails = createAsyncThunk(
+    'auth/updateDetails',
+    async (detailData, { getState, rejectWithValue }) => {
+        try {
+            const { auth } = getState();
+            const token = auth.token;
+
+            const response = await axios.put(`${BASE_URL}/auth/update-details`, detailData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (response.data.success === false || response.data.status === 'failed') {
+                return rejectWithValue(response.data.errors || { message: response.data.message });
+            }
+            return response.data;
+        } catch (error) {
+            if (error.response && error.response.data) {
+                if (error.response.data.message) {
+                    return rejectWithValue({ message: error.response.data.message });
+                }
+                return rejectWithValue(error.response.data.errors);
+            }
+            return rejectWithValue({ message: error.message });
+        }
+    }
+);
+
 export const logoutUser = createAsyncThunk(
     'auth/logoutUser',
     async (_, { rejectWithValue }) => {
@@ -156,24 +186,6 @@ export const logoutUser = createAsyncThunk(
                 return rejectWithValue(error.response.data.errors);
             }
             return rejectWithValue({ message: error.message });
-        }
-    }
-);
-
-export const getShows = createAsyncThunk(
-    'auth/getShows',
-    async (page = 1, { rejectWithValue }) => {
-        try {
-            const showToken = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MGNlNjYxYzE1YTk5ZWI2MGVkZjAyZjQzMjcwMGYyOSIsIm5iZiI6MTczMDE5NjMxOC4yNjMyOSwic3ViIjoiNjcyMGIwZDE1YmU5ZTg3NTlkYTdlMmU5Iiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.1pRPS2yYJg7tf_uIS7DdL97NCznmgPhqrwwmaldjfQw';
-            const response = await axios.get(`https://api.themoviedb.org/3/discover/tv?include_adult=true&language=en-US&page=${page}&sort_by=vote_average.desc&vote_count.gte=2000`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${showToken}`,
-                },
-            });
-            return response.data;
-        } catch (error) {
-            return rejectWithValue(error.response.data);
         }
     }
 );
@@ -230,12 +242,19 @@ const initialState = {
     upError: null,
     upGenErrors: null,
 
-    shows: [],
-    currentPage: 1,
-    total_pages: 0,
-    total_results: 0,
-    showLoading: false,
-    showError: null,
+    details: {
+        age: null,
+        gender: '',
+        height: null,
+        location: '',
+        bodyType: '',
+        drinking: '',
+        smoking: '',
+        relationshipStatus: '',
+    },
+    detLoading: false,
+    detError: null,
+    detGenErrors: null,
 
     upshowLoading: false,
     upshowErrors: null
@@ -251,10 +270,12 @@ const authSlice = createSlice({
             state.logError = null;
             state.logGenErrors = null;
             state.otpError = null;
+            state.delUserError = null;
             state.upError = null;
             state.upGenErrors = null;
-            state.delUserError = null;
-            state.showError = null;
+            state.detError = null;
+            state.detGenErrors = null;
+
         },
         setSignupData: (state, action) => {
             state.signupData = action.payload;
@@ -314,6 +335,7 @@ const authSlice = createSlice({
                 state.logError = null;
                 state.logGenErrors = null;
                 state.user = action.payload.user;
+                state.details = action.payload.user.details;
                 state.token = action.payload.token;
             })
             .addCase(loginUser.rejected, (state, action) => {
@@ -347,26 +369,36 @@ const authSlice = createSlice({
                     state.upGenErrors = action.payload?.message || "Unknown error occurred";
                 }
             })
+            .addCase(updateDetails.pending, (state) => {
+                state.detLoading = true;
+                state.detError = null;
+            })
+            .addCase(updateDetails.fulfilled, (state, action) => {
+                state.detLoading = false;
+                state.details = {
+                    age: action.payload.user.details.age,
+                    gender: action.payload.user.details.gender,
+                    height: action.payload.user.details.height,
+                    location: action.payload.user.details.location,
+                    bodyType: action.payload.user.details.bodyType,
+                    drinking: action.payload.user.details.drinking,
+                    smoking: action.payload.user.details.smoking,
+                    relationshipStatus: action.payload.user.details.relationshipStatus,
+                };
+                state.detError = null;
+            })
+            .addCase(updateDetails.rejected, (state, action) => {
+                state.detLoading = false;
+                if (Array.isArray(action.payload)) {
+                    state.detError = action.payload;
+                } else {
+                    state.detGenErrors = action.payload?.message || "Unknown error occurred";
+                }
+            })
             .addCase(logoutUser.fulfilled, (state) => {
                 state.user = null;
                 state.token = null;
                 state.signupData = null;
-            })
-            .addCase(getShows.pending, (state) => {
-                state.showLoading = true;
-                state.showError = null;
-            })
-            .addCase(getShows.fulfilled, (state, action) => {
-                state.showLoading = false;
-                state.showError = null;
-                state.shows = action.payload.results;
-                state.currentPage = action.payload.page;
-                state.total_pages = action.payload.total_pages;
-                state.total_results = action.payload.total_results;
-            })
-            .addCase(getShows.rejected, (state) => {
-                state.showLoading = false;
-                state.showError = "Unknown error occurred";
             })
             .addCase(updateShows.pending, (state) => {
                 state.upshowLoading = true;

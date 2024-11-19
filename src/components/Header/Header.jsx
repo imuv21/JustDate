@@ -105,7 +105,6 @@ const Header = () => {
 
                     <div className="menu" id="menu">
                         <ul className="menu-inner">
-                            <li className="menu-item"><a href="/" className="menu-link">Home</a></li>
                             <li className="menu-item"><a href="/discover" className="menu-link">Discover</a></li>
                             <li className="menu-item"><a href="/about-us" className="menu-link">About us</a></li>
                             <li className="menu-item"><a href="/contact-us" className="menu-link">Contact us</a></li>

@@ -105,11 +105,11 @@ const Signup = () => {
           <h1 className="heading">Create your account</h1>
           
           <div className="minBox flexcol center">
-            <input type="text" name='firstName' autoComplete='name' placeholder='Enter your first name...' value={formValues.firstName} onChange={handleChange} />
+            <input type="text" name='firstName' autoComplete="given-name" placeholder='Enter your first name...' value={formValues.firstName} onChange={handleChange} />
             {firstNameError && <p className="error">{firstNameError.msg}</p>}
           </div>
           <div className="minBox flexcol center">
-            <input type="text" name='lastName' autoComplete='name' placeholder='Enter your last name...' value={formValues.lastName} onChange={handleChange} />
+            <input type="text" name='lastName' autoComplete="family-name" placeholder='Enter your last name...' value={formValues.lastName} onChange={handleChange} />
             {lastNameError && <p className="error">{lastNameError.msg}</p>}
           </div>
           <div className="minBox flexcol center">
