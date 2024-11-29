@@ -14,9 +14,9 @@ const Profile = () => {
     const dispatch = useDispatch();
     const { user, upError, upGenErrors, details, detError, detGenErrors, } = useSelector((state) => state.auth);
     const pageSize = 20;
-    const total_results = seriesSchema.length;
-    const total_pages = Math.ceil(total_results / pageSize);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [editMode, setEditMode] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
@@ -245,13 +245,19 @@ const Profile = () => {
         setShowPassword(prev => !prev);
     }
 
+    const filteredItems = seriesSchema.filter((show) =>
+        show.original_name?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    const total_results = filteredItems.length;
+    const total_pages = Math.ceil(total_results / pageSize);
+
     //pagination
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= total_pages) {
             setCurrentPage(newPage);
         }
     };
-    const paginatedItems = seriesSchema.slice(
+    const paginatedItems = filteredItems.slice(
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
@@ -267,6 +273,7 @@ const Profile = () => {
 
             <div className="page flex wh">
                 <div className="profile">
+
                     <div className="subProfile">
                         <h1 className="heading">Profile</h1>
                         <div className="pagebox10 flexcol start-center">
@@ -497,32 +504,56 @@ const Profile = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="subProfileTwo">
-                        <h1 className="heading">Shows</h1>
-                        <p className='textSmol'>Showing {paginatedItems.length} out of {seriesSchema.length} shows</p>
-                        <div className="showGrid">
-                            {paginatedItems && paginatedItems.map((show, index) => (
-                                <div className="showItem" key={index}>
-                                    <img
-                                        src={show.poster_url ? `${show.poster_url}` : 'https://media.istockphoto.com/id/1396814518/vector/image-coming-soon-no-photo-no-thumbnail-image-available-vector-illustration.jpg?s=612x612&w=0&k=20&c=hnh2OZgQGhf0b46-J2z7aHbIWwq8HNlSDaNp2wn_iko='}
-                                        alt={show.original_name ? show.original_name : `poster-${index}`}
-                                    />
-                                    <p className='textSmol'>{show.original_name ? show.original_name : `Unknown`}</p>
-                                </div>
-                            ))}
-                        </div>
-                        {total_results > pageSize && (
-                            <div className="pagination">
-                                <button disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}>
-                                    Previous
-                                </button>
-                                <span>{`Page ${currentPage} of ${total_pages}`}</span>
-                                <button disabled={currentPage === total_pages} onClick={() => handlePageChange(currentPage + 1)}>
-                                    Next
-                                </button>
+
+                    {editMode ? (
+                        <div className="subProfileTwo">
+                            <h1 className="heading">Shows</h1>
+                            <div className="flex center-space wh">
+                                <input type="text" className="searchInput" placeholder="Search shows..." value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1) }} />
+                                <button onClick={() => setEditMode(false)}>Save</button>
                             </div>
-                        )}
-                    </div>
+                            <p className='textSmol'>Showing {paginatedItems.length} out of {seriesSchema.length} shows</p>
+
+                            <div className="showGrid">
+                                {paginatedItems && paginatedItems.map((show, index) => (
+                                    <div className="showItem" key={index}>
+                                        <img
+                                            src={show.poster_url ? `${show.poster_url}` : 'https://media.istockphoto.com/id/1396814518/vector/image-coming-soon-no-photo-no-thumbnail-image-available-vector-illustration.jpg?s=612x612&w=0&k=20&c=hnh2OZgQGhf0b46-J2z7aHbIWwq8HNlSDaNp2wn_iko='}
+                                            alt={show.original_name ? show.original_name : `poster-${index}`}
+                                        />
+                                        <p className='textSmol'>{show.original_name ? show.original_name : `Unknown`}</p>
+                                    </div>
+                                ))}
+                            </div>
+                            {total_results > pageSize && (
+                                <div className="pagination">
+                                    <button disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}>
+                                        Previous
+                                    </button>
+                                    <span>{`Page ${currentPage} of ${total_pages}`}</span>
+                                    <button disabled={currentPage === total_pages} onClick={() => handlePageChange(currentPage + 1)}>
+                                        Next
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="subProfileTwo">
+                            <h1 className="heading">Your top 10</h1>
+                            <div className="showGrid">
+                                {paginatedItems && paginatedItems.map((show, index) => (
+                                    <div className="showItem" key={index}>
+                                        <img
+                                            src={show.poster_url ? `${show.poster_url}` : 'https://media.istockphoto.com/id/1396814518/vector/image-coming-soon-no-photo-no-thumbnail-image-available-vector-illustration.jpg?s=612x612&w=0&k=20&c=hnh2OZgQGhf0b46-J2z7aHbIWwq8HNlSDaNp2wn_iko='}
+                                            alt={show.original_name ? show.original_name : `poster-${index}`}
+                                        />
+                                        <p className='textSmol'>{show.original_name ? show.original_name : `Unknown`}</p>
+                                    </div>
+                                ))}
+                            </div>
+                            <button onClick={() => setEditMode(true)}>Edit</button>
+                        </div>
+                    )}
                 </div>
             </div>
         </Fragment>

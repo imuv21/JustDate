@@ -26,6 +26,7 @@
     "react-router-dom": "^6.26.1",
     "redux-persist": "^6.0.0",
     "sass": "^1.79.5",
+    "socket.io-client": "^4.8.1",
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {

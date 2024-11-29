@@ -17,7 +17,7 @@ import NewReleasesIcon from '@mui/icons-material/NewReleases';
 const Discover = () => {
 
   const dispatch = useDispatch();
-  const { people, pepLoading, pepError, likError, likLoading } = useSelector((state) => state.social);
+  const { people, pepLoading, pepError, likLoading } = useSelector((state) => state.social);
   const { user } = useSelector((state) => state.auth);
   const [liked, setLiked] = useState({});
 
@@ -41,12 +41,12 @@ const Discover = () => {
         const response = await dispatch(likeUser({ likedUserId: personId })).unwrap();
         if (response.status === "success") {
           setLiked((prev) => ({ ...prev, [personId]: true }));
-          toast(<div className='flex center g5'> < VerifiedIcon /> {response.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'rgb(0, 189, 0)' }, className: 'success', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+          toast(<div className='flex center g5'> < VerifiedIcon /> {response.message}</div>, { duration: 6000, position: 'top-center', style: { color: 'rgb(0, 189, 0)' }, className: 'success', ariaProps: { role: 'status', 'aria-live': 'polite' } });
       } else {
           toast(<div className='flex center g5'> < NewReleasesIcon /> {response.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
       }
       } catch (error) {
-        toast(<div className='flex center g5'> < NewReleasesIcon /> Error liking user!</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+        toast(<div className='flex center g5'> < NewReleasesIcon /> Something went wrong!</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
       }
     }
   };
@@ -68,7 +68,7 @@ const Discover = () => {
 
         <div className="discoverGrid">
 
-          {!pepLoading && !pepError && people && people.map((person) => (
+          {!pepLoading && !pepError && people?.length > 0 ? people.map((person) => (
             <div className="disGridItem" key={person._id}>
               <p className='textBig'>{person.firstName} {person.lastName}</p>
               <div className="interestsTwo">
@@ -109,10 +109,9 @@ const Discover = () => {
                     </a>
                   )}
                 </div>
-              </div>
+              </div> 
             </div>
-          ))}
-
+          )) : (<p className='text'>There are no users yet!</p>)}
         </div>
       </div>
     </Fragment>

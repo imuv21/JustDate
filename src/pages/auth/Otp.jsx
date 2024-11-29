@@ -109,11 +109,11 @@ const Otp = () => {
 
             <div className='page flex center' style={{ height: '100vh' }}>
                 <div className="authBox flexcol center" style={{ gap: '30px' }}>
-                    <h1 className="heading">Enter the OTP sent to your email</h1>
+                    <h1 className="heading" style={{ textAlign: 'center' }}>Enter the OTP sent to your email</h1>
 
                     <div className="flex center g20">
                         {otpDigits.map((digit, index) => (
-                            <input key={index} value={digit} maxLength={1} style={{ width: '50px' }}
+                            <input key={index} value={digit} maxLength={1} className='otpBox'
                                 ref={el => (otpInputs.current[index] = el)}
                                 onChange={e => handleInputChange(index, e.target.value)}
                                 onKeyDown={e => handleKeyDown(e, index)}

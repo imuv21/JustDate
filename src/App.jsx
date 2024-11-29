@@ -19,6 +19,9 @@ const Otp = lazy(() => import('./pages/auth/Otp'));
 const Home = lazy(() => import('./pages/Home'));
 const Profile = lazy(() => import('./pages/auth/Profile'));
 const Discover = lazy(() => import('./pages/social/Discover'));
+const Chats = lazy(() => import('./pages/social/Chats'));
+const Chat = lazy(() => import('./pages/social/Chat'));
+const Likes = lazy(() => import('./pages/social/Likes'));
 
 
 
@@ -37,6 +40,9 @@ function App() {
             <Route path='/' element={<Layout><Home /></Layout>} />
             <Route path='/profile' element={<Layout><Profile /></Layout>} />
             <Route path='/discover' element={<Layout><Discover /></Layout>} />
+            <Route path='/likes' element={<Layout><Likes /></Layout>} />
+            <Route path='/chats' element={<Layout><Chats /></Layout>} />
+            <Route path='/chat/:receiverId' element={<Layout><Chat /></Layout>} />
           </Route>
 
           {/* public */}

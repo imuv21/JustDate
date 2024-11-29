@@ -1,4 +1,5 @@
 
+
 export const seriesSchema = [
     {
         original_name: 'Game of Thrones',

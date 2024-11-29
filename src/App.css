@@ -12,7 +12,8 @@
 
   --trans: all 0.4s ease-in-out;
   --brOne: 3px;
-  --brTwo: 10px;
+  --brTwo: 5px;
+  --brFour: 10px;
   --brThree: 15px;
   --border: 1px solid var(--codeTwo);
   --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -111,7 +112,7 @@ select::-webkit-scrollbar {
 
 select::-webkit-scrollbar-thumb {
   background-color: var(--codeThree);
-  border-radius: var(--brTwo);
+  border-radius: var(--brFour);
 }
 
 button {
@@ -514,7 +515,7 @@ button:focus {
 
 .showGrid::-webkit-scrollbar-thumb {
   background-color: var(--codeTwo);
-  border-radius: var(--brTwo);
+  border-radius: var(--brFour);
 }
 
 
@@ -710,6 +711,129 @@ button:focus {
   background-color: var(--codeTwo);
   border-radius: 5px;
 }
+
+/* chat styling */
+.chat-component {
+  height: 500px;
+  width: 100%;
+  max-width: 700px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--brTwo);
+  background-color: var(--codeTwo);
+}
+
+.reciever {
+  width: 100%;
+  gap: 25px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  border-radius: var(--brTwo);
+  background-color: var(--codeTwo);
+  margin-bottom: 10px;
+}
+.reciever .MuiSvgIcon-root {
+  width: 18px;
+  height: 18px;
+  color: gray;
+}
+
+.chatBody {
+  width: 100%;
+  height: 400px;
+  gap: 5px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  border-radius: var(--brTwo);
+  background-color: var(--codeOne);
+}
+.chatBody::-webkit-scrollbar {
+  width: 5px;
+}
+.chatBody::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.chatBody::-webkit-scrollbar-thumb {
+  background-color: #888; 
+  border-radius: 10px; 
+  border: 2px solid #f1f1f1;
+}
+.chatBody::-webkit-scrollbar-thumb:hover {
+  background-color: #555; 
+}
+
+.senderChat {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+.recieverChat {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.senderMsg {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 10px;
+  background-color: rgb(133, 236, 133);
+  border-radius: var(--brTwo);
+}
+.recieverMsg {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 10px;
+  background-color: rgb(152, 216, 255);
+  border-radius: var(--brTwo);
+}
+
+.timestamp {
+  font-size: 8px;
+  font-weight: 400;
+  color: gray;
+}
+
+.sendInput {
+  width: 100%;
+  height: 50px;
+  gap: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--brTwo);
+}
+.sendInput input {
+  border-radius: var(--brTwo);
+  background-color: var(--codeOne);
+  border: none;
+  padding: 10px;
+}
+.sendInput input::placeholder {
+  text-transform: capitalize;
+  color: var(--codeFour);
+}
+.sendInput button {
+  border-radius: var(--brTwo);
+  padding: 9px 20px;
+}
+
 
 
 /* common */
