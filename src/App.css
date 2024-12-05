@@ -484,6 +484,7 @@ button:focus {
 
 .subProfile {
   width: 100%;
+  max-width: 700px;
   min-width: 300px;
   padding: 10px;
   gap: 30px;
@@ -644,7 +645,7 @@ button:focus {
 .disGridItem {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: flex-start;
   padding: 10px;
   gap: 10px;
@@ -783,24 +784,32 @@ button:focus {
 }
 
 .senderMsg {
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: end;
+  align-items: flex-end;
   justify-content: center;
   gap: 2px;
   padding: 4px 10px;
   background-color: rgb(133, 236, 133);
-  border-radius: var(--brTwo);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 0px;
 }
 .recieverMsg {
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: end;
+  align-items: flex-start;
   justify-content: center;
   gap: 2px;
   padding: 4px 10px;
   background-color: rgb(152, 216, 255);
-  border-radius: var(--brTwo);
+  border-top-left-radius: 0px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .timestamp {
@@ -840,6 +849,7 @@ button:focus {
 .page {
   background: var(--codeOne);
   width: 100%;
+  min-height: 100vh;
   padding: 100px 100px 40px 100px;
   gap: 30px;
 }

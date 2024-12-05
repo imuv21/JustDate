@@ -300,7 +300,7 @@ const Profile = () => {
                                         ))}
                                     </div>
                                 </div>) : (
-                                    <p>Update your interests and details to increase your reach!</p>
+                                    <p className='error'>Must update your profile and details only then people can see you!</p>
                                 )
                             }
                             <div className="links">
@@ -505,7 +505,7 @@ const Profile = () => {
                         </div>
                     </div>
 
-                    {editMode ? (
+                    {/* {editMode ? (
                         <div className="subProfileTwo">
                             <h1 className="heading">Shows</h1>
                             <div className="flex center-space wh">
@@ -553,7 +553,7 @@ const Profile = () => {
                             </div>
                             <button onClick={() => setEditMode(true)}>Edit</button>
                         </div>
-                    )}
+                    )} */}
                 </div>
             </div>
         </Fragment>
