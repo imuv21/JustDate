@@ -33,14 +33,17 @@ const Chat = () => {
         e.preventDefault();
         if (sending) return;
         setSending(true);
-        const tempMsg = { sender: { _id: senderId }, receiver: { _id: receiverId }, content: messageContent, timestamp: new Date().toISOString()};
+        const tempMsg = { 
+            sender: { _id: senderId }, 
+            receiver: { _id: receiverId }, 
+            content: messageContent, 
+            timestamp: new Date().toISOString()
+        };
 
         try {
             socket.emit('newMessage', tempMsg);
             const result = await dispatch(sendMessage({ senderId, receiverId, content: messageContent })).unwrap();
-            if (result.status === 'success') {
-                toast(<div className='flex center g5'> < VerifiedIcon /> {result.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'rgb(0, 189, 0)' }, className: 'success', ariaProps: { role: 'status', 'aria-live': 'polite' } });
-            } else {
+            if (result.status !== 'success') {
                 toast(<div className='flex center g5'> < NewReleasesIcon /> {result.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
             }
         } catch (error) {
@@ -88,6 +91,7 @@ const Chat = () => {
         }
     }, [messages]);
 
+    
     if (msgLoading) return <p>Loading...</p>;
     if (msgError) return <p>{msgError}</p>;
 
