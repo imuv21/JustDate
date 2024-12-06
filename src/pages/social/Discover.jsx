@@ -61,7 +61,7 @@ const Discover = () => {
         <link rel="canonical" href="https://justdate.netlify.app/discover" />
       </Helmet>
       <div className='page flexcol wh'>
-        <h1 className="heading">Discover</h1>
+        <h1 className="heading">Discover people</h1>
 
         {pepLoading && <p>Loading...</p>}
         {pepError && <p>{pepError}</p>}
