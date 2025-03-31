@@ -1,13 +1,13 @@
 import './Header.scss';
 import React, { useState, useEffect, Fragment } from 'react';
-import { toast } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logoutUser, deleteUser } from '../../slices/authSlice';
+import { logout, deleteUser } from '../../slices/authSlice';
+import { showToast } from '../Schema';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import VerifiedIcon from '@mui/icons-material/Verified';
-import NewReleasesIcon from '@mui/icons-material/NewReleases';
+
+
 
 
 const Header = () => {
@@ -17,28 +17,29 @@ const Header = () => {
     const user = useSelector((state) => state.auth.user);
     const [isHovered, setIsHovered] = useState(false);
 
-    const logout = async (e) => {
+    const logoutHandler = async (e) => {
         e.preventDefault();
         try {
-            const response = await dispatch(logoutUser()).unwrap();
-            toast(<div className='flex center g5'> < VerifiedIcon /> {response.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'rgb(0, 189, 0)' }, className: 'success', ariaProps: { role: 'status', 'aria-live': 'polite' } });
-        } catch (error) {
-            toast(<div className='flex center g5'> < NewReleasesIcon /> Error logging out...</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
-        } finally {
+            dispatch(logout());
+            sessionStorage.clear();
+            showToast('success', 'Logout Successfully!');
             navigate('/login');
+        } catch (error) {
+            showToast('error', 'Something went wrong!');
         }
     }
+
     const deleteAccount = async (e) => {
         e.preventDefault();
-        try{
+        try {
             const deleteResponse = await dispatch(deleteUser({ email: user.email, password: user.password })).unwrap();
             if (deleteResponse.status === 'success') {
-                toast(<div className='flex center g5'> < VerifiedIcon /> {deleteResponse.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'rgb(0, 189, 0)' }, className: 'success', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+                showToast('success', `${deleteResponse.message}`);
             } else {
-                toast(<div className='flex center g5'> < NewReleasesIcon /> {deleteResponse.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+                showToast('error', `${deleteResponse.message}`);
             }
         } catch (error) {
-            toast(<div className='flex center g5'> < NewReleasesIcon /> Error deleting account...</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+            showToast('error', `${deleteResponse.message}`);
         }
     }
 
@@ -106,8 +107,8 @@ const Header = () => {
                     <div className="menu" id="menu">
                         <ul className="menu-inner">
                             <li className="menu-item"><a href="/discover" className="menu-link">Discover</a></li>
-                            <li className="menu-item"><a href="/about-us" className="menu-link">About us</a></li>
-                            <li className="menu-item"><a href="/contact-us" className="menu-link">Contact us</a></li>
+                            {/* <li className="menu-item"><a href="/about-us" className="menu-link">About us</a></li>
+                            <li className="menu-item"><a href="/contact-us" className="menu-link">Contact us</a></li> */}
                             <li className="menu-item">
                                 <a href="/profile" className="menu-link main-div" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
                                     Account <KeyboardArrowDownIcon />
@@ -115,16 +116,16 @@ const Header = () => {
                                         <a href='/profile' className='text'>Profile</a>
                                         <a href='/chats' className='text'>Chats</a>
                                         <a href='/likes' className='text'>Likes</a>
-                                        <a onClick={logout} className='text'>Logout</a>
-                                        <a onClick={deleteAccount} className='text'>Delete Account</a>
+                                        <a onClick={logoutHandler} className='text'>Logout</a>
+                                        {/* <a onClick={deleteAccount} className='text'>Delete Account</a> */}
                                     </div>
                                 </a>
                             </li>
                             <li className="menu-item mlink"><a href="/profile" className="menu-link">Profile</a></li>
                             <li className="menu-item mlink"><a href="/chats" className="menu-link">Chats</a></li>
                             <li className="menu-item mlink"><a href="/likes" className="menu-link">Likes</a></li>
-                            <li className="menu-item mlink"><a onClick={logout} className="menu-link">Logout</a></li>
-                            <li className="menu-item mlink"><a onClick={deleteAccount} className="menu-link">Delete Account</a></li>
+                            <li className="menu-item mlink"><a onClick={logoutHandler} className="menu-link">Logout</a></li>
+                            {/* <li className="menu-item mlink"><a onClick={deleteAccount} className="menu-link">Delete Account</a></li> */}
                         </ul>
                     </div>
                     {/* <a href="/contact-us" className="menu-block">Sign up &nbsp;&nbsp; <EastIcon /></a> */}

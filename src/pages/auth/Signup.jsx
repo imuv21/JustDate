@@ -2,22 +2,20 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-hot-toast';
 import { signupUser, clearErrors, setSignupData } from '../../slices/authSlice';
+import { showToast } from '../../components/Schema';
 import DOMPurify from 'dompurify';
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import VerifiedIcon from '@mui/icons-material/Verified';
-import NewReleasesIcon from '@mui/icons-material/NewReleases';
 
 
 const Signup = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { signError, siGenErrors } = useSelector((state) => state.auth);
-
+  const { signLoading, signErrors, signError } = useSelector((state) => state.auth);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formValues, setFormValues] = useState({
     firstName: '',
     lastName: '',
@@ -43,19 +41,18 @@ const Signup = () => {
     dispatch(clearErrors());
   };
 
-  const getFieldError = (field) => Array.isArray(signError) ? signError.find(error => error.path === field) : null;
+  const getFieldError = (field) => Array.isArray(signErrors) ? signErrors.find(error => error.path === field) : null;
   const firstNameError = getFieldError('firstName');
   const lastNameError = getFieldError('lastName');
   const emailError = getFieldError('email');
   const passwordError = getFieldError('password');
   const confirmPasswordError = getFieldError('confirmPassword');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSignup = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
-    if (firstNameError || lastNameError || emailError || passwordError || confirmPasswordError || siGenErrors) {
-      toast(<div className='flex center g5'> < NewReleasesIcon /> Please fix the errors before submitting the form.</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+    if (firstNameError || lastNameError || emailError || passwordError || confirmPasswordError) {
+      showToast('error', 'Please fix the errors before submitting the form!');
       return;
     }
     setIsSubmitting(true);
@@ -68,9 +65,9 @@ const Signup = () => {
         password: DOMPurify.sanitize(formValues.password),
         confirmPassword: DOMPurify.sanitize(formValues.confirmPassword),
       };
+
       const response = await dispatch(signupUser(userData)).unwrap();
       if (response.status === "success") {
-
         dispatch(setSignupData({
           email: userData.email,
           firstName: userData.firstName,
@@ -78,12 +75,12 @@ const Signup = () => {
           password: userData.password,
           confirmPassword: userData.confirmPassword,
         }));
-
-        toast(<div className='flex center g5'> < VerifiedIcon /> {response.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'rgb(0, 189, 0)' }, className: 'success', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+        showToast('success', `${response.message}`);
         navigate('/verify-otp');
       }
+
     } catch (error) {
-      toast(<div className='flex center g5'> < NewReleasesIcon /> Error signing up...</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+      showToast('error', 'Something went wrong!');
     } finally {
       setIsSubmitting(false);
     }
@@ -103,7 +100,7 @@ const Signup = () => {
       <div className='page flex center' style={{ height: '100vh' }}>
         <form className="authBox flexcol center" onSubmit={handleSignup}>
           <h1 className="heading">Create your account</h1>
-          
+
           <div className="minBox flexcol center">
             <input type="text" name='firstName' autoComplete="given-name" placeholder='Enter your first name...' value={formValues.firstName} onChange={handleChange} />
             {firstNameError && <p className="error">{firstNameError.msg}</p>}
@@ -127,16 +124,16 @@ const Signup = () => {
           </div>
           <div className="minBox flexcol center">
             <div className="wh relative password">
-              <input type={conPasswordVisible ? "text" : "password"} style={{ textTransform: 'none' }} className='wh' name="confirmPassword" autoComplete="new-password" placeholder='Enter your password again...' value={formValues.confirmPassword} onChange={handleChange} />
+              <input type={conPasswordVisible ? "text" : "password"} style={{ textTransform: 'none' }} className='wh' name="confirmPassword" autoComplete="confirm-password" placeholder='Enter your password again...' value={formValues.confirmPassword} onChange={handleChange} />
               <span onClick={toggleConPasswordVisibility}>
                 {conPasswordVisible ? <VisibilityIcon /> : <VisibilityOffIcon />}
               </span>
             </div>
             {confirmPasswordError && <p className="error">{confirmPasswordError.msg}</p>}
           </div>
-          <button type='submit' disabled={isSubmitting}>{isSubmitting ? 'Signing up...' : 'Signup'}</button>
-          {signError?.length > 0 && <p className="error flex center">Please correct the above errors.</p>}
-          {siGenErrors && <p className="error flex center">{siGenErrors}</p>}
+
+          <button type='submit' disabled={isSubmitting || signLoading}>{(isSubmitting || signLoading) ? 'Signing...' : 'Signup'}</button>
+          {signError && <p className="error flex center">{signError}</p>}
           <p className="text">Already have an account? <Link className='text hover' to='/login'>Click here</Link></p>
         </form>
       </div>

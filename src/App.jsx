@@ -14,6 +14,8 @@ const Layout = lazy(() => import('./components/Layout'));
 const Login = lazy(() => import('./pages/auth/Login'));
 const Signup = lazy(() => import('./pages/auth/Signup'));
 const Otp = lazy(() => import('./pages/auth/Otp'));
+const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword'));
+const VerifyPassword = lazy(() => import('./pages/auth/VerifyPassword'));
 
 //private
 const Home = lazy(() => import('./pages/Home'));
@@ -50,6 +52,8 @@ function App() {
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<Signup />} />
             <Route path='/verify-otp' element={<Otp />} />
+            <Route path='/forgot-password' element={<ForgotPassword />} />
+            <Route path='/new-password' element={<VerifyPassword />} />
             <Route path='/rough' element={<Rough />} />
           </Route>
 

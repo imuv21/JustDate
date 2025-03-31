@@ -13,7 +13,7 @@ export const getPeople = createAsyncThunk(
                 headers: { Authorization: `Bearer ${token}` },
                 params: { page, size, minAge, maxAge, gender, bodyType, location }
             };
-            const response = await axios.get(`${BASE_URL}/auth/discover`, config);
+            const response = await axios.get(`${BASE_URL}/api/v1/auth/discover`, config);
             if (response.data.status === "failed") {
                 return rejectWithValue(response.data.message);
             }
@@ -33,7 +33,7 @@ export const likeUser = createAsyncThunk(
         try {
             const { auth } = getState();
             const token = auth.token;
-            const response = await axios.post(`${BASE_URL}/auth/like/${likedUserId}`, {},
+            const response = await axios.post(`${BASE_URL}/api/v1/auth/like/${likedUserId}`, {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             if (response.data.status === "failed") {
@@ -55,7 +55,7 @@ export const fetchMessages = createAsyncThunk(
         try {
             const { auth } = getState();
             const token = auth.token;
-            const response = await axios.get(`${BASE_URL}/auth/get-message/${senderId}/${receiverId}`,
+            const response = await axios.get(`${BASE_URL}/api/v1/auth/get-message/${senderId}/${receiverId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -75,7 +75,7 @@ export const sendMessage = createAsyncThunk(
         try {
             const { auth } = getState();
             const token = auth.token;
-            const response = await axios.post(`${BASE_URL}/auth/send-message`,
+            const response = await axios.post(`${BASE_URL}/api/v1/auth/send-message`,
                 { senderId, receiverId, content },
                 {
                     headers: {
@@ -99,7 +99,7 @@ export const getMatchUser = createAsyncThunk(
             const config = {
                 headers: { Authorization: `Bearer ${token}` },
             };
-            const response = await axios.get(`${BASE_URL}/auth/get-match-users`, config);
+            const response = await axios.get(`${BASE_URL}/api/v1/auth/get-match-users`, config);
             if (response.data.status === "failed") {
                 return rejectWithValue(response.data.message);
             }
@@ -122,7 +122,7 @@ export const getLikeUser = createAsyncThunk(
             const config = {
                 headers: { Authorization: `Bearer ${token}` },
             };
-            const response = await axios.get(`${BASE_URL}/auth/get-like-users`, config);
+            const response = await axios.get(`${BASE_URL}/api/v1/auth/get-like-users`, config);
             if (response.data.status === "failed") {
                 return rejectWithValue(response.data.message);
             }
