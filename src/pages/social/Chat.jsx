@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchMessages, sendMessage } from '../../slices/socialSlice';
 import { io } from 'socket.io-client';
 import { useParams } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
+import { showToast } from '../../components/Schema';
 import VerifiedIcon from '@mui/icons-material/Verified';
-import NewReleasesIcon from '@mui/icons-material/NewReleases';
-const MAIN_URL = import.meta.env.VITE_MAIN_URL;
+
+const MAIN_URL = import.meta.env.VITE_BACKEND_URL;
 
 
 const Chat = () => {
@@ -30,24 +30,25 @@ const Chat = () => {
     };
 
     const sendText = async (e) => {
+
         e.preventDefault();
         if (sending) return;
         setSending(true);
-        const tempMsg = { 
-            sender: { _id: senderId }, 
-            receiver: { _id: receiverId }, 
-            content: messageContent, 
+        
+        const tempMsg = {
+            sender: { _id: senderId },
+            receiver: { _id: receiverId },
+            content: messageContent,
             timestamp: new Date().toISOString()
         };
-
         try {
             socket.emit('newMessage', tempMsg);
             const result = await dispatch(sendMessage({ senderId, receiverId, content: messageContent })).unwrap();
             if (result.status !== 'success') {
-                toast(<div className='flex center g5'> < NewReleasesIcon /> {result.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+                showToast('success', `${result.message}`);
             }
         } catch (error) {
-            toast(<div className='flex center g5'> < NewReleasesIcon /> {sendMsgError}</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+            showToast('error', `${sendMsgError}`);
         } finally {
             setMessageContent('');
             setSending(false);
@@ -91,7 +92,7 @@ const Chat = () => {
         }
     }, [messages]);
 
-    
+
     if (msgLoading) return <p>Loading...</p>;
     if (msgError) return <p>{msgError}</p>;
 

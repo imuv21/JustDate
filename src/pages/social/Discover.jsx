@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { toast } from 'react-hot-toast';
+import { showToast } from '../../components/Schema';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPeople, likeUser } from '../../slices/socialSlice';
 
@@ -9,9 +9,6 @@ import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import CakeIcon from '@mui/icons-material/Cake';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import VerifiedIcon from '@mui/icons-material/Verified';
-import NewReleasesIcon from '@mui/icons-material/NewReleases';
-
 
 
 const Discover = () => {
@@ -41,12 +38,12 @@ const Discover = () => {
         const response = await dispatch(likeUser({ likedUserId: personId })).unwrap();
         if (response.status === "success") {
           setLiked((prev) => ({ ...prev, [personId]: true }));
-          toast(<div className='flex center g5'> < VerifiedIcon /> {response.message}</div>, { duration: 6000, position: 'top-center', style: { color: 'rgb(0, 189, 0)' }, className: 'success', ariaProps: { role: 'status', 'aria-live': 'polite' } });
-      } else {
-          toast(<div className='flex center g5'> < NewReleasesIcon /> {response.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
-      }
+          showToast('success', `${response.message}`);
+        } else {
+          showToast('error', `${response.message}`);
+        }
       } catch (error) {
-        toast(<div className='flex center g5'> < NewReleasesIcon /> Something went wrong!</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+        showToast('error', 'Something went wrong!');
       }
     }
   };
@@ -109,7 +106,7 @@ const Discover = () => {
                     </a>
                   )}
                 </div>
-              </div> 
+              </div>
             </div>
           )) : (<p className='text'>There are no users yet!</p>)}
         </div>
