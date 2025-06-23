@@ -1,12 +1,11 @@
 import './App.css';
-import React, { lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
 
 //components
 import Loader from './components/Loader/Loader';
-const Rough = lazy(() => import('./components/Rough'));
 const Protector = lazy(() => import('./components/Protector'));
 const Layout = lazy(() => import('./components/Layout'));
 
@@ -54,7 +53,6 @@ function App() {
             <Route path='/verify-otp' element={<Otp />} />
             <Route path='/forgot-password' element={<ForgotPassword />} />
             <Route path='/new-password' element={<VerifyPassword />} />
-            <Route path='/rough' element={<Rough />} />
           </Route>
 
           {/* both */}

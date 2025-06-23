@@ -1,20 +1,16 @@
 import './Header.scss';
-import React, { useState, useEffect, Fragment } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect, Fragment } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout, deleteUser } from '../../slices/authSlice';
+import { logout } from '../../slices/authSlice';
 import { showToast } from '../Schema';
-
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-
-
 
 
 const Header = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = useSelector((state) => state.auth.user);
     const [isHovered, setIsHovered] = useState(false);
 
     const logoutHandler = async (e) => {
@@ -26,20 +22,6 @@ const Header = () => {
             navigate('/login');
         } catch (error) {
             showToast('error', 'Something went wrong!');
-        }
-    }
-
-    const deleteAccount = async (e) => {
-        e.preventDefault();
-        try {
-            const deleteResponse = await dispatch(deleteUser({ email: user.email, password: user.password })).unwrap();
-            if (deleteResponse.status === 'success') {
-                showToast('success', `${deleteResponse.message}`);
-            } else {
-                showToast('error', `${deleteResponse.message}`);
-            }
-        } catch (error) {
-            showToast('error', `${deleteResponse.message}`);
         }
     }
 

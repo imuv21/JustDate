@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
@@ -60,8 +60,7 @@ const VerifyPassword = () => {
             };
             const response = await dispatch(verifyPassword(userData)).unwrap();
 
-            if (response.status === "success") {
-
+            if (response.status) {
                 dispatch(setEmailData(null));
                 showToast('success', `${response.message}`);
                 navigate('/login');

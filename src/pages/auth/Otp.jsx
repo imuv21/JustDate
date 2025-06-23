@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef, useEffect } from 'react';
+import { Fragment, useState, useRef, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
@@ -38,7 +38,7 @@ const Otp = () => {
                 };
                 const otpResponse = await dispatch(verifyOtp(userData)).unwrap();
 
-                if (otpResponse.status === 'success') {
+                if (otpResponse.status) {
                     dispatch(setSignupData(null));
                     showToast('success', `${otpResponse.message}`);
                     navigate('/login');
@@ -90,7 +90,7 @@ const Otp = () => {
         try {
             const response = await dispatch(signupUser(signupData)).unwrap();
 
-            if (response.status === "success") {
+            if (response.status) {
                 showToast('success', `${response.message}`);
                 setTimeLeft(121);
                 setTimerRunning(true);

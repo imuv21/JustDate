@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
@@ -41,7 +41,7 @@ const ForgotPassword = () => {
             };
             const response = await dispatch(forgotPassword(userData)).unwrap();
 
-            if (response.status === "success") {
+            if (response.status) {
                 dispatch(setEmailData({
                     email: userData.email
                 }));

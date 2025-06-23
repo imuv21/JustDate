@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -67,7 +67,7 @@ const Signup = () => {
       };
 
       const response = await dispatch(signupUser(userData)).unwrap();
-      if (response.status === "success") {
+      if (response.status) {
         dispatch(setSignupData({
           email: userData.email,
           firstName: userData.firstName,

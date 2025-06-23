@@ -8,7 +8,7 @@ export const signupUser = createAsyncThunk(
     'auth/signupUser',
     async (userData, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${BASE_URL}/api/v1/auth/signup`, userData, {
+            const response = await axios.post(`${BASE_URL}/api/v1/public/signup`, userData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -30,7 +30,7 @@ export const verifyOtp = createAsyncThunk(
     'auth/verifyOtp',
     async (userData, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${BASE_URL}/api/v1/auth/verify-otp`, userData, {
+            const response = await axios.post(`${BASE_URL}/api/v1/public/verify-otp`, userData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -51,7 +51,7 @@ export const loginUser = createAsyncThunk(
     'auth/loginUser',
     async (userData, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${BASE_URL}/api/v1/auth/login`, userData, {
+            const response = await axios.post(`${BASE_URL}/api/v1/public/login`, userData, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
@@ -73,7 +73,7 @@ export const forgotPassword = createAsyncThunk(
     'auth/forgotPassword',
     async (userData, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${BASE_URL}/api/v1/auth/forgot-password`, userData, {
+            const response = await axios.post(`${BASE_URL}/api/v1/public/forgot-password`, userData, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
@@ -95,7 +95,7 @@ export const verifyPassword = createAsyncThunk(
     'auth/verifyPassword',
     async (userData, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${BASE_URL}/api/v1/auth/verify-password-otp`, userData, {
+            const response = await axios.post(`${BASE_URL}/api/v1/public/verify-password-otp`, userData, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
@@ -109,35 +109,6 @@ export const verifyPassword = createAsyncThunk(
                 }
                 return rejectWithValue(error.response.data.errors);
             }
-        }
-    }
-);
-
-export const deleteUser = createAsyncThunk(
-    'auth/deleteUser',
-    async ({ email, password }, { getState, rejectWithValue }) => {
-        try {
-            const { auth } = getState();
-            const token = auth.token;
-            const response = await axios.delete(`${BASE_URL}/api/v1/auth/delete-user`, {
-                data: { email, password },
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            if (response.data.status === 'failed') {
-                return rejectWithValue(response.data.message);
-            }
-            return response.data;
-        } catch (error) {
-            if (error.response && error.response.data) {
-                if (error.response.data.message) {
-                    return rejectWithValue({ message: error.response.data.message });
-                }
-                return rejectWithValue(error.response.data.errors);
-            }
-            return rejectWithValue({ message: error.message });
         }
     }
 );
@@ -149,7 +120,7 @@ export const updateProfile = createAsyncThunk(
             const { auth } = getState();
             const token = auth.token;
 
-            const response = await axios.put(`${BASE_URL}/api/v1/auth/update-profile`, userData, {
+            const response = await axios.patch(`${BASE_URL}/api/v1/private/update-profile`, userData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
@@ -175,33 +146,7 @@ export const updateDetails = createAsyncThunk(
             const { auth } = getState();
             const token = auth.token;
 
-            const response = await axios.put(`${BASE_URL}/api/v1/auth/update-details`, detailData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            return response.data;
-
-        } catch (error) {
-            if (error.response && error.response.data) {
-                if (error.response.data.message) {
-                    return rejectWithValue({ message: error.response.data.message });
-                }
-                return rejectWithValue(error.response.data.errors);
-            }
-        }
-    }
-);
-
-export const updateShows = createAsyncThunk(
-    'auth/updateShows',
-    async (userData, { getState, rejectWithValue }) => {
-        try {
-            const { auth } = getState();
-            const token = auth.token;
-
-            const response = await axios.put(`${BASE_URL}/api/v1/auth/update-shows`, userData, {
+            const response = await axios.patch(`${BASE_URL}/api/v1/private/update-details`, detailData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
@@ -252,13 +197,18 @@ const initialState = {
 
     details: {
         age: null,
-        gender: '',
         height: null,
         location: '',
-        bodyType: '',
+        profession: '',
+        gender: '',
         drinking: '',
         smoking: '',
+        haveKids: '', 
+        lookingFor: '', 
+        datingType: '',
         relationshipStatus: '',
+        eatingHabit: '',
+        bodyType: ''
     },
     detLoading: false,
     detError: null,
@@ -330,19 +280,6 @@ const authSlice = createSlice({
             .addCase(verifyOtp.rejected, (state, action) => {
                 state.otpLoading = false;
                 state.otpError = action.payload?.message || "Something went wrong!";
-            })
-
-            .addCase(deleteUser.pending, (state) => {
-                state.delUserLoading = true;
-                state.delUserError = null;
-            })
-            .addCase(deleteUser.fulfilled, (state) => {
-                state.delUserLoading = false;
-                state.delUserError = null;
-            })
-            .addCase(deleteUser.rejected, (state, action) => {
-                state.delUserLoading = false;
-                state.delUserError = action.payload.message || "Unknown error occurred";
             })
 
             .addCase(loginUser.pending, (state) => {
@@ -437,13 +374,18 @@ const authSlice = createSlice({
                 state.detLoading = false;
                 state.details = {
                     age: action.payload.user.details.age,
-                    gender: action.payload.user.details.gender,
                     height: action.payload.user.details.height,
                     location: action.payload.user.details.location,
-                    bodyType: action.payload.user.details.bodyType,
+                    profession: action.payload.user.details.profession,
+                    gender: action.payload.user.details.gender,
                     drinking: action.payload.user.details.drinking,
                     smoking: action.payload.user.details.smoking,
+                    haveKids: action.payload.user.details.haveKids,
+                    lookingFor: action.payload.user.details.lookingFor,
+                    datingType: action.payload.user.details.datingType,
                     relationshipStatus: action.payload.user.details.relationshipStatus,
+                    eatingHabit: action.payload.user.details.eatingHabit,
+                    bodyType: action.payload.user.details.bodyType
                 };
                 state.detError = null;
             })
@@ -455,24 +397,7 @@ const authSlice = createSlice({
                     state.detGenErrors = action.payload?.message || "Unknown error occurred";
                 }
             })
-
-            .addCase(updateShows.pending, (state) => {
-                state.upshowLoading = true;
-                state.upshowErrors = null;
-            })
-            .addCase(updateShows.fulfilled, (state, action) => {
-                state.upshowLoading = false;
-                state.user = {
-                    ...state.user,
-                    shows: action.payload.user.shows
-                };
-                state.upshowErrors = null;
-            })
-            .addCase(updateShows.rejected, (state, action) => {
-                state.upshowLoading = false;
-                state.upshowErrors = action.payload?.message || "Unknown error occurred";
-            })
-    },
+    }
 });
 
 export const { clearErrors, setSignupData, setEmailData, logout } = authSlice.actions;

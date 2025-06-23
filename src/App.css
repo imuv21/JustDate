@@ -331,12 +331,14 @@ button:focus {
   width: 100%;
   max-width: 400px;
   min-width: 300px;
+  height: 500px;
+  overflow: scroll;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
-  border-radius: 10px;
+  border-radius: 0px;
   gap: 5px;
   background: white;
   padding: 15px;
@@ -587,10 +589,35 @@ button:focus {
   align-items: center;
   justify-content: flex-start;
 }
+
 .interests p {
   padding: 10px;
   background-color: var(--codeTwo);
   border-radius: 5px;
+}
+
+.selected-interests {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.interest-tag {
+  background: var(--codeFour);
+  color: var(--codeOne);
+  font-size: 8px;
+  padding: 3px 5px;
+  gap: 5px;
+  border-radius: var(--brTwo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.interest-tag button {
+  padding: 0px;
 }
 
 .links {
@@ -601,36 +628,71 @@ button:focus {
   align-items: center;
   justify-content: start;
 }
+
 .links a img {
   width: 30px;
   height: 30px;
   filter: saturate(0);
 }
 
-/* pagination */
+/* pagination*/
 .pagination {
-  width: 100%;
+  width: fit-content;
   display: flex;
-  justify-content: start;
   align-items: center;
-  margin-top: 20px;
-  gap: 20px;
+  justify-content: flex-start;
+  gap: 10px;
 }
 
-.pagination button:disabled {
+.pagination-btn {
+  width: fit-content;
+  white-space: nowrap;
+  padding: 7px 10px;
+  color: var(--codeFive);
+  background-color: var(--codeOne);
+}
+
+.pagination-btn:disabled {
   background-color: var(--codeTwo);
   color: var(--codeThree);
   border: 1px solid var(--codeThree);
   cursor: not-allowed;
 }
 
-.pagination span {
-  font-size: 1.2rem;
+.pagination-btn:hover:not(:disabled) {
+  background-color: var(--codeFour);
+  color: var(--codeOne);
 }
 
-.pagination button:hover:not(:disabled) {
+.pagination-btn.active {
+  background-color: var(--codeFour);
+  color: var(--codeOne);
+}
+
+.pagination-btn.active:hover {
   background-color: var(--codeOne);
   color: var(--codeFour);
+}
+
+.sortCat {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.orderfilter {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.orderfilter .MuiSvgIcon-root {
+  width: 30px;
+  height: 30px;
+  color: var(--codeThree);
 }
 
 
@@ -642,6 +704,7 @@ button:focus {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
+
 .disGridItem {
   display: flex;
   flex-direction: column;
@@ -660,30 +723,34 @@ button:focus {
   justify-content: flex-start;
   gap: 20px;
 }
+
 .subdetail {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 3px;
 }
+
 .subdetail .MuiSvgIcon-root {
   width: 18px;
   height: 18px;
 }
 
-.likeButton{
+.likeButton {
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .likeButton .MuiSvgIcon-root {
   width: 30px;
   height: 30px;
   cursor: pointer;
 }
+
 .likeButton .MuiSvgIcon-root.disabled {
-  cursor: not-allowed; 
-  opacity: 0.5; 
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .linksTwo {
@@ -692,6 +759,7 @@ button:focus {
   align-items: center;
   justify-content: space-between;
 }
+
 .linksTwo div a img {
   width: 20px;
   height: 20px;
@@ -707,6 +775,7 @@ button:focus {
   align-items: center;
   justify-content: flex-start;
 }
+
 .interestsTwo p {
   padding: 5px;
   background-color: var(--codeTwo);
@@ -738,6 +807,7 @@ button:focus {
   background-color: var(--codeTwo);
   margin-bottom: 10px;
 }
+
 .reciever .MuiSvgIcon-root {
   width: 18px;
   height: 18px;
@@ -755,19 +825,23 @@ button:focus {
   border-radius: var(--brTwo);
   background-color: var(--codeOne);
 }
+
 .chatBody::-webkit-scrollbar {
   width: 5px;
 }
+
 .chatBody::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
+
 .chatBody::-webkit-scrollbar-thumb {
-  background-color: #888; 
-  border-radius: 10px; 
+  background-color: #888;
+  border-radius: 10px;
   border: 2px solid #f1f1f1;
 }
+
 .chatBody::-webkit-scrollbar-thumb:hover {
-  background-color: #555; 
+  background-color: #555;
 }
 
 .senderChat {
@@ -776,6 +850,7 @@ button:focus {
   align-items: center;
   justify-content: end;
 }
+
 .recieverChat {
   width: 100%;
   display: flex;
@@ -797,6 +872,7 @@ button:focus {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 0px;
 }
+
 .recieverMsg {
   position: relative;
   display: flex;
@@ -828,16 +904,19 @@ button:focus {
   justify-content: center;
   border-radius: var(--brTwo);
 }
+
 .sendInput input {
   border-radius: var(--brTwo);
   background-color: var(--codeOne);
   border: none;
   padding: 10px;
 }
+
 .sendInput input::placeholder {
   text-transform: capitalize;
   color: var(--codeFour);
 }
+
 .sendInput button {
   border-radius: var(--brTwo);
   padding: 9px 20px;
@@ -935,12 +1014,6 @@ button:focus {
     flex-direction: column;
     align-items: center;
     justify-content: start;
-  }
-
-  .pagination {
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
   }
 }
 

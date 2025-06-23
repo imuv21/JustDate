@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -51,7 +51,7 @@ const Login = () => {
       };
       const response = await dispatch(loginUser(userData)).unwrap();
 
-      if (response.status === "success") {
+      if (response.status) {
         showToast('success', `${response.message}`);
         navigate('/');
       }

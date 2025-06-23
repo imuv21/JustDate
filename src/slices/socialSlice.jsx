@@ -3,21 +3,20 @@ import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
+
 export const getPeople = createAsyncThunk(
     'social/getPeople',
-    async ({ page, size, minAge, maxAge, gender, bodyType, location }, { rejectWithValue, getState }) => {
+    async ({ minAge, maxAge, minHeight, maxHeight, location, profession, gender, drinking, smoking, haveKids, lookingFor, datingType, relationshipStatus, eatingHabit, bodyType, interests, page, size, sortBy = "firstName", order }, { rejectWithValue, getState }) => {
         try {
             const { auth } = getState();
             const token = auth.token;
             const config = {
                 headers: { Authorization: `Bearer ${token}` },
-                params: { page, size, minAge, maxAge, gender, bodyType, location }
+                params: { minAge, maxAge, minHeight, maxHeight, location, profession, gender, drinking, smoking, haveKids, lookingFor, datingType, relationshipStatus, eatingHabit, bodyType, interests, page, size, sortBy, order }
             };
-            const response = await axios.get(`${BASE_URL}/api/v1/auth/discover`, config);
-            if (response.data.status === "failed") {
-                return rejectWithValue(response.data.message);
-            }
+            const response = await axios.get(`${BASE_URL}/api/v1/private/discover`, config);
             return response.data;
+
         } catch (error) {
             if (error.response && error.response.data) {
                 return rejectWithValue(error.response.data.message || error.response.data.errors);
@@ -33,13 +32,11 @@ export const likeUser = createAsyncThunk(
         try {
             const { auth } = getState();
             const token = auth.token;
-            const response = await axios.post(`${BASE_URL}/api/v1/auth/like/${likedUserId}`, {},
+            const response = await axios.post(`${BASE_URL}/api/v1/private/like/${likedUserId}`, {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            if (response.data.status === "failed") {
-                return rejectWithValue(response.data.message);
-            }
             return response.data;
+
         } catch (error) {
             if (error.response && error.response.data) {
                 return rejectWithValue(error.response.data.message || error.response.data.errors);
@@ -55,7 +52,7 @@ export const fetchMessages = createAsyncThunk(
         try {
             const { auth } = getState();
             const token = auth.token;
-            const response = await axios.get(`${BASE_URL}/api/v1/auth/get-message/${senderId}/${receiverId}`,
+            const response = await axios.get(`${BASE_URL}/api/v1/private/get-message/${senderId}/${receiverId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -63,6 +60,7 @@ export const fetchMessages = createAsyncThunk(
                 }
             );
             return response.data;
+
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
@@ -75,7 +73,7 @@ export const sendMessage = createAsyncThunk(
         try {
             const { auth } = getState();
             const token = auth.token;
-            const response = await axios.post(`${BASE_URL}/api/v1/auth/send-message`,
+            const response = await axios.post(`${BASE_URL}/api/v1/private/send-message`,
                 { senderId, receiverId, content },
                 {
                     headers: {
@@ -84,6 +82,7 @@ export const sendMessage = createAsyncThunk(
                 }
             );
             return response.data;
+
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
@@ -94,16 +93,17 @@ export const getMatchUser = createAsyncThunk(
     'social/getMatchUser',
     async (_, { rejectWithValue, getState }) => {
         try {
+            console.log('🔍 getMatchUser thunk triggered');
+
             const { auth } = getState();
             const token = auth.token;
             const config = {
                 headers: { Authorization: `Bearer ${token}` },
             };
-            const response = await axios.get(`${BASE_URL}/api/v1/auth/get-match-users`, config);
-            if (response.data.status === "failed") {
-                return rejectWithValue(response.data.message);
-            }
+            const response = await axios.get(`${BASE_URL}/api/v1/private/get-match-users`, config);
+            console.log('this is the fucking response >> ',response.data);
             return response.data;
+
         } catch (error) {
             if (error.response && error.response.data) {
                 return rejectWithValue(error.response.data.message || error.response.data.errors);
@@ -122,11 +122,9 @@ export const getLikeUser = createAsyncThunk(
             const config = {
                 headers: { Authorization: `Bearer ${token}` },
             };
-            const response = await axios.get(`${BASE_URL}/api/v1/auth/get-like-users`, config);
-            if (response.data.status === "failed") {
-                return rejectWithValue(response.data.message);
-            }
+            const response = await axios.get(`${BASE_URL}/api/v1/private/get-like-users`, config);
             return response.data;
+
         } catch (error) {
             if (error.response && error.response.data) {
                 return rejectWithValue(error.response.data.message || error.response.data.errors);
@@ -136,12 +134,16 @@ export const getLikeUser = createAsyncThunk(
     }
 );
 
+
 const initialState = {
     people: [],
-    page: 1,
-    size: 20,
-    totalPages: 0,
     totalResults: 0,
+    totalPages: 0,
+    pagePeople: 0,
+    isFirst: false,
+    isLast: false,
+    hasNext: false,
+    hasPrevious: false,
     pepLoading: false,
     pepError: null,
 
@@ -178,10 +180,13 @@ const socialSlice = createSlice({
             .addCase(getPeople.fulfilled, (state, action) => {
                 state.pepLoading = false;
                 state.people = action.payload.people;
-                state.page = action.payload.page;
-                state.size = action.payload.size;
-                state.totalPages = action.payload.totalPages;
                 state.totalResults = action.payload.totalResults;
+                state.totalPages = action.payload.totalPages;
+                state.pagePeople = action.payload.pagePeople;
+                state.isFirst = action.payload.isFirst;
+                state.isLast = action.payload.isLast;
+                state.hasNext = action.payload.hasNext;
+                state.hasPrevious = action.payload.hasPrevious;
             })
             .addCase(getPeople.rejected, (state, action) => {
                 state.pepLoading = false;

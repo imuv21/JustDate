@@ -1,9 +1,9 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-hot-toast';
 import { updateProfile, updateDetails, clearErrors } from '../../slices/authSlice';
-import { seriesSchema, locationSchema } from '../../components/Schema';
+import { locationSchema, professionSchema, interestsSchema } from '../../components/Schema';
+import { showToast } from '../../components/Schema';
 import DOMPurify from 'dompurify';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import NewReleasesIcon from '@mui/icons-material/NewReleases';
@@ -13,19 +13,87 @@ const Profile = () => {
 
     const dispatch = useDispatch();
     const { user, upError, upGenErrors, details, detError, detGenErrors, } = useSelector((state) => state.auth);
-    const pageSize = 20;
-    const [currentPage, setCurrentPage] = useState(1);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [editMode, setEditMode] = useState(false);
 
-    const [searchTerm, setSearchTerm] = useState('');
-    const [showDropdown, setShowDropdown] = useState(false);
+    // location
+    const [searchLocation, setSearchLocation] = useState('');
+    const [showLocationDropdown, setShowLocationDropdown] = useState(false);
     const [isLocationSelected, setIsLocationSelected] = useState(false);
-    const filteredLocations = locationSchema.filter((location) =>
-        location.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredLocations = useMemo(() =>
+        locationSchema.filter(location =>
+            location.toLowerCase().includes(searchLocation.toLowerCase())
+        ), [searchLocation]
     );
+    const handleLocationChange = (e) => {
+        const { value } = e.target;
+        setSearchLocation(value);
+        setShowLocationDropdown(true);
+        setIsLocationSelected(false);
+        handleDetailChange(e);
+    };
+    const handleSelectLocation = (location) => {
+        setSearchLocation(location);
+        handleDetailChange({ target: { name: 'location', value: location } });
+        setShowLocationDropdown(false);
+        setIsLocationSelected(true);
+    };
 
-    // edit profile
+    // profession
+    const [searchProfession, setSearchProfession] = useState('');
+    const [showProfessionDropdown, setShowProfessionDropdown] = useState(false);
+    const [isProfessionSelected, setIsProfessionSelected] = useState(false);
+    const filteredProfessions = useMemo(() =>
+        professionSchema.filter(profession =>
+            profession.toLowerCase().includes(searchProfession.toLowerCase())
+        ), [searchProfession]
+    );
+    const handleProfessionChange = (e) => {
+        const { value } = e.target;
+        setSearchProfession(value);
+        setShowProfessionDropdown(true);
+        setIsProfessionSelected(false);
+        handleDetailChange(e);
+    };
+    const handleSelectProfession = (profession) => {
+        setSearchProfession(profession);
+        handleDetailChange({ target: { name: 'profession', value: profession } });
+        setShowProfessionDropdown(false);
+        setIsProfessionSelected(true);
+    };
+
+    // interests
+    const [searchInterests, setSearchInterests] = useState('');
+    const [showInterestsDropdown, setShowInterestsDropdown] = useState(false);
+    const filteredInterests = useMemo(() =>
+        interestsSchema.filter(interest =>
+            interest.toLowerCase().includes(searchInterests.toLowerCase())
+        ), [searchInterests]
+    );
+    const handleInterestChange = (e) => {
+        const { value } = e.target;
+        setSearchInterests(value);
+        setShowInterestsDropdown(true);
+        if (value.includes(',')) {
+            const newInterests = value.split(',')
+                .map(item => item.trim())
+                .filter(item => item);
+            setFormValues(prev => ({
+                ...prev,
+                interests: [...new Set([...prev.interests, ...newInterests])]
+            }));
+            setSearchInterests('');
+        }
+        dispatch(clearErrors());
+    };
+    const handleSelectInterest = (interest) => {
+        setFormValues(prev => ({ ...prev, interests: [...new Set([...prev.interests, interest])] }));
+        setSearchInterests('');
+        setShowInterestsDropdown(false);
+    };
+    const removeInterest = (index) => {
+        setFormValues(prev => ({ ...prev, interests: prev.interests.filter((_, i) => i !== index) }));
+    };
+
+    // forms
     const [isClickedFooter, setIsClickedFooter] = useState(false);
     const [isClickedFooterTwo, setIsClickedFooterTwo] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -44,122 +112,83 @@ const Profile = () => {
         setIsClickedFooter(false);
         setIsClickedFooterTwo(false);
     }
-
     const [formValues, setFormValues] = useState({
         firstName: '',
         lastName: '',
-        interests: '',
+        interests: [],
         links: {
-            imdb: { url: '', isPublic: false },
-            insta: { url: '', isPublic: false },
-            twitter: { url: '', isPublic: false },
-            spotify: { url: '', isPublic: false }
+            imdb: '',
+            insta: '',
+            twitter: '',
+            spotify: ''
         }
     });
     const [detailValues, setDetailValues] = useState({
         age: null,
-        gender: '',
         height: null,
         location: '',
-        bodyType: '',
+        profession: '',
+        gender: '',
         drinking: '',
         smoking: '',
+        haveKids: '',
+        lookingFor: '',
+        datingType: '',
         relationshipStatus: '',
+        eatingHabit: '',
+        bodyType: ''
     });
 
-    useEffect(() => {
-        if (user) {
-            setFormValues(prevValues => ({
-                ...prevValues,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                interests: user.interests || '',
-                links: {
-                    imdb: { url: user.links?.imdb?.url || '', isPublic: user.links?.imdb?.isPublic || false },
-                    insta: { url: user.links?.insta?.url || '', isPublic: user.links?.insta?.isPublic || false },
-                    twitter: { url: user.links?.twitter?.url || '', isPublic: user.links?.twitter?.isPublic || false },
-                    spotify: { url: user.links?.spotify?.url || '', isPublic: user.links?.spotify?.isPublic || false }
-                }
-            }));
-        }
-    }, [user]);
-    useEffect(() => {
-        if (details) {
-            setDetailValues(prevValues => ({
-                ...prevValues,
-                age: details.age,
-                gender: details.gender,
-                height: details.height || null,
-                location: details.location,
-                bodyType: details.bodyType,
-                drinking: details.drinking,
-                smoking: details.smoking,
-                relationshipStatus: details.relationshipStatus,
-            }));
-            setSearchTerm(details.location || '');
-            setIsLocationSelected(!!details.location);
-        }
-    }, [details]);
-
     const handleInputChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        if (name.includes('imdb') || name.includes('insta') || name.includes('twitter') || name.includes('spotify')) {
-            const [platform, key] = name.split('.');
-            setFormValues({
-                ...formValues,
-                links: {
-                    ...formValues.links,
-                    [platform]: {
-                        ...formValues.links[platform],
-                        [key]: type === 'checkbox' ? checked : value
-                    }
-                }
-            });
+        const { name, value } = e.target;
+        if (name === 'interests') {
+            const interestsArray = value.split(',').map(item => item.trim());
+            setFormValues(prev => ({ ...prev, [name]: interestsArray }));
+        } else if (name.includes('.')) {
+            const [parent, child] = name.split('.');
+            setFormValues(prev => ({
+                ...prev,
+                links: { ...prev.links, [parent]: { ...prev.links[parent], [child]: value } }
+            }));
         } else {
-            setFormValues({ ...formValues, [name]: value });
+            setFormValues(prev => ({ ...prev, [name]: value }));
         }
         dispatch(clearErrors());
-    };
-    const handleSearchChange = (e) => {
-        const { value } = e.target;
-        setSearchTerm(value);
-        setShowDropdown(true);
-        setIsLocationSelected(false);
-        handleDetailChange(e);
     };
     const handleDetailChange = (e) => {
         const { name, value } = e.target;
         setDetailValues({ ...detailValues, [name]: value });
         dispatch(clearErrors());
     };
-    const handleSelectLocation = (location) => {
-        setSearchTerm(location);
-        handleDetailChange({ target: { name: 'location', value: location } });
-        setShowDropdown(false);
-        setIsLocationSelected(true);
-    };
 
     const getFieldError = (field) => Array.isArray(upError) ? upError.find(error => error.path === field) : null;
+    const firstNameError = getFieldError('firstName');
+    const lastNameError = getFieldError('lastName');
     const interestsError = getFieldError('interests');
-    const imdbError = getFieldError('links.imdb.url');
-    const instaError = getFieldError('links.insta.url');
-    const twitterError = getFieldError('links.twitter.url');
-    const spotifyError = getFieldError('links.spotify.url');
+    const imdbError = getFieldError('links.imdb');
+    const instaError = getFieldError('links.insta');
+    const twitterError = getFieldError('links.twitter');
+    const spotifyError = getFieldError('links.spotify');
     const getDetailError = (field) => Array.isArray(detError) ? detError.find(error => error.path === field) : null;
     const ageError = getDetailError('age');
-    const genderError = getDetailError('gender');
     const heightError = getDetailError('height');
     const locationError = getDetailError('location');
-    const bodyTypeError = getDetailError('bodyType');
+    const professionError = getDetailError('profession');
+    const genderError = getDetailError('gender');
     const drinkingError = getDetailError('drinking');
     const smokingError = getDetailError('smoking');
+    const haveKidsError = getDetailError('haveKids');
+    const lookingForError = getDetailError('lookingFor');
+    const datingTypeError = getDetailError('datingType');
     const relationshipStatusError = getDetailError('relationshipStatus');
+    const eatingHabitError = getDetailError('eatingHabit');
+    const bodyTypeError = getDetailError('bodyType');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (isSubmitted) return;
-        if (interestsError || imdbError || instaError || twitterError || spotifyError || upGenErrors) {
-            toast(<div className='flex center g5'> < NewReleasesIcon /> Please fix the errors in the form.</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+        if (firstNameError || lastNameError || interestsError || imdbError || instaError || twitterError || spotifyError || upGenErrors) {
+            showToast('error', 'Please fix the errors in the form!');
             return;
         }
         setIsSubmitted(true);
@@ -167,23 +196,25 @@ const Profile = () => {
             const userData = {
                 firstName: DOMPurify.sanitize(formValues.firstName),
                 lastName: DOMPurify.sanitize(formValues.lastName),
-                interests: DOMPurify.sanitize(formValues.interests),
+                interests: formValues.interests.map(interest => DOMPurify.sanitize(interest).trim()).filter(interest => interest !== ''),
                 links: {
-                    imdb: { url: DOMPurify.sanitize(formValues.links.imdb.url), isPublic: formValues.links.imdb.isPublic },
-                    insta: { url: DOMPurify.sanitize(formValues.links.insta.url), isPublic: formValues.links.insta.isPublic },
-                    twitter: { url: DOMPurify.sanitize(formValues.links.twitter.url), isPublic: formValues.links.twitter.isPublic },
-                    spotify: { url: DOMPurify.sanitize(formValues.links.spotify.url), isPublic: formValues.links.spotify.isPublic }
+                    imdb: DOMPurify.sanitize(formValues.links.imdb),
+                    insta: DOMPurify.sanitize(formValues.links.insta),
+                    twitter: DOMPurify.sanitize(formValues.links.twitter),
+                    spotify: DOMPurify.sanitize(formValues.links.spotify)
                 }
             };
+            console.log('data >>> ', userData);
             const response = await dispatch(updateProfile(userData)).unwrap();
-            if (response.status === "success") {
-                toast(<div className='flex center g5'> < VerifiedIcon /> {response.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'rgb(0, 189, 0)' }, className: 'success', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+            console.log('after dispatch', response);
+            if (response.status) {
+                showToast('success', response.message);
                 setIsClickedFooter(false);
             } else {
-                toast(<div className='flex center g5'> < NewReleasesIcon /> {response.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+                showToast('error', response.message);
             }
         } catch (error) {
-            toast(<div className='flex center g5'> < NewReleasesIcon /> Error updating profile!</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+            showToast('error', 'Error updating profile!');
         } finally {
             setIsSubmitted(false);
         }
@@ -191,53 +222,55 @@ const Profile = () => {
     const handleDetailSubmit = async (event) => {
         event.preventDefault();
         if (isSubmittedTwo) return;
-        if (!isLocationSelected) {
-            toast(<div className='flex center g5'> <NewReleasesIcon /> Please select a location from the dropdown.</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
-            return;
-        }
-        if (ageError || genderError || heightError || locationError || bodyTypeError || drinkingError || smokingError || relationshipStatusError || detGenErrors) {
-            toast(<div className='flex center g5'> < NewReleasesIcon /> Please fix the errors in the form.</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+        if (ageError || heightError || locationError || professionError || genderError || drinkingError || smokingError || haveKidsError || lookingForError || datingTypeError || relationshipStatusError || eatingHabitError || bodyTypeError || detGenErrors) {
+            showToast('error', 'Please fix the errors in the form!');
             return;
         }
         setIsSubmittedTwo(true);
         try {
             const detailData = {
                 age: DOMPurify.sanitize(detailValues.age),
-                gender: DOMPurify.sanitize(detailValues.gender),
                 height: DOMPurify.sanitize(detailValues.height),
                 location: DOMPurify.sanitize(detailValues.location),
-                bodyType: DOMPurify.sanitize(detailValues.bodyType),
+                profession: DOMPurify.sanitize(detailValues.profession),
+                gender: DOMPurify.sanitize(detailValues.gender),
                 drinking: DOMPurify.sanitize(detailValues.drinking),
                 smoking: DOMPurify.sanitize(detailValues.smoking),
+                haveKids: DOMPurify.sanitize(detailValues.haveKids),
+                lookingFor: DOMPurify.sanitize(detailValues.lookingFor),
+                datingType: DOMPurify.sanitize(detailValues.datingType),
                 relationshipStatus: DOMPurify.sanitize(detailValues.relationshipStatus),
+                eatingHabit: DOMPurify.sanitize(detailValues.eatingHabit),
+                bodyType: DOMPurify.sanitize(detailValues.bodyType)
             };
             const response = await dispatch(updateDetails(detailData)).unwrap();
-            if (response.status === "success") {
-                toast(<div className='flex center g5'> < VerifiedIcon /> {response.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'rgb(0, 189, 0)' }, className: 'success', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+            if (response.status) {
+                showToast('success', response.message);
                 setIsClickedFooterTwo(false);
             } else {
-                toast(<div className='flex center g5'> < NewReleasesIcon /> {response.message}</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+                showToast('error', response.message);
             }
         } catch (error) {
-            toast(<div className='flex center g5'> < NewReleasesIcon /> Error updating details!</div>, { duration: 3000, position: 'top-center', style: { color: 'red' }, className: 'failed', ariaProps: { role: 'status', 'aria-live': 'polite' } });
+            showToast('error', 'Error updating details!');
         } finally {
             setIsSubmittedTwo(false);
             setIsLocationSelected(false);
+            setIsProfessionSelected(false);
         }
     };
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (isClickedFooter || isClickedFooterTwo) {
-                setIsClickedFooter(false);
-                setIsClickedFooterTwo(false);
-            }
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, [isClickedFooter, isClickedFooterTwo]);
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //         if (isClickedFooter || isClickedFooterTwo) {
+    //             setIsClickedFooter(false);
+    //             setIsClickedFooterTwo(false);
+    //         }
+    //     };
+    //     window.addEventListener('scroll', handleScroll);
+    //     return () => {
+    //         window.removeEventListener('scroll', handleScroll);
+    //     };
+    // }, [isClickedFooter, isClickedFooterTwo]);
 
     //password protect
     const [showPassword, setShowPassword] = useState(false);
@@ -245,22 +278,49 @@ const Profile = () => {
         setShowPassword(prev => !prev);
     }
 
-    const filteredItems = seriesSchema.filter((show) =>
-        show.original_name?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    const total_results = filteredItems.length;
-    const total_pages = Math.ceil(total_results / pageSize);
+    useEffect(() => {
+        if (user) {
+            const initialInterests = user.interests || [];
+            setFormValues(prevValues => ({
+                ...prevValues,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                interests: initialInterests,
+                links: {
+                    imdb: user.links?.imdb || '',
+                    insta: user.links?.insta || '',
+                    twitter: user.links?.twitter || '',
+                    spotify: user.links?.spotify || ''
+                }
+            }));
+            setSearchInterests(initialInterests.join(', '));
+        };
+    }, [user]);
 
-    //pagination
-    const handlePageChange = (newPage) => {
-        if (newPage >= 1 && newPage <= total_pages) {
-            setCurrentPage(newPage);
-        }
-    };
-    const paginatedItems = filteredItems.slice(
-        (currentPage - 1) * pageSize,
-        currentPage * pageSize
-    );
+    useEffect(() => {
+        if (details) {
+            setDetailValues(prevValues => ({
+                ...prevValues,
+                age: details.age,
+                height: details.height,
+                location: details.location,
+                profession: details.profession,
+                gender: details.gender,
+                drinking: details.drinking,
+                smoking: details.smoking,
+                haveKids: details.haveKids,
+                lookingFor: details.lookingFor,
+                datingType: details.datingType,
+                relationshipStatus: details.relationshipStatus,
+                eatingHabit: details.eatingHabit,
+                bodyType: details.bodyType
+            }));
+            setSearchLocation(details.location || '');
+            setSearchProfession(details.profession || '');
+            setIsLocationSelected(!!details.location);
+            setIsProfessionSelected(!!details.profession);
+        };
+    }, [details]);
 
 
     return (
@@ -275,6 +335,7 @@ const Profile = () => {
                 <div className="profile">
 
                     <div className="subProfile">
+
                         <h1 className="heading">Profile</h1>
                         <div className="pagebox10 flexcol start-center">
                             <div className="pagebox20 flex center-space">
@@ -295,8 +356,8 @@ const Profile = () => {
                                 (<div className="interestsCont">
                                     <h1 className="headingSmol">Interests</h1>
                                     <div className="interests">
-                                        {user.interests.split(',').map((interest, index) => (
-                                            <p key={index} className="textBig">{interest.trim() || '...'}</p>
+                                        {user.interests?.map((interest, index) => (
+                                            <p key={index}>{interest}</p>
                                         ))}
                                     </div>
                                 </div>) : (
@@ -306,17 +367,17 @@ const Profile = () => {
                             <div className="links">
                                 {user.links && (
                                     <>
-                                        <a href={`https://${user.links.imdb?.url || "www.imdb.com"}`} target="_blank" rel="noopener noreferrer">
-                                            <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070090/JustDate/Assets/icons8-imdb-an-online-database-of-information-related-to-films_-and-television-programs-100_sbkn70.png" className={user.links.imdb?.url ? 'filter' : ''} alt="imdb" />
+                                        <a href={`https://${user.links.imdb || "www.imdb.com"}`} target="_blank" rel="noopener noreferrer">
+                                            <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070090/JustDate/Assets/icons8-imdb-an-online-database-of-information-related-to-films_-and-television-programs-100_sbkn70.png" className={user.links.imdb ? 'filter' : ''} alt="imdb" />
                                         </a>
-                                        <a href={`https://${user.links.insta?.url || "www.instagram.com"}`} target="_blank" rel="noopener noreferrer">
-                                            <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070090/JustDate/Assets/icons8-instagram-100_tgb1t2.png" className={user.links.insta?.url ? 'filter' : ''} alt="instagram" />
+                                        <a href={`https://${user.links.insta || "www.instagram.com"}`} target="_blank" rel="noopener noreferrer">
+                                            <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070090/JustDate/Assets/icons8-instagram-100_tgb1t2.png" className={user.links.insta ? 'filter' : ''} alt="instagram" />
                                         </a>
-                                        <a href={`https://${user.links.twitter?.url || "www.x.com"}`} target="_blank" rel="noopener noreferrer">
-                                            <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070081/JustDate/Assets/icons8-twitter-100_pukkbt.png" className={user.links.twitter?.url ? 'filter' : ''} alt="twitter" />
+                                        <a href={`https://${user.links.twitter || "www.x.com"}`} target="_blank" rel="noopener noreferrer">
+                                            <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070081/JustDate/Assets/icons8-twitter-100_pukkbt.png" className={user.links.twitter ? 'filter' : ''} alt="twitter" />
                                         </a>
-                                        <a href={`https://${user.links.spotify?.url || "open.spotify.com"}`} target="_blank" rel="noopener noreferrer">
-                                            <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070081/JustDate/Assets/icons8-spotify-100_wivbcr.png" className={user.links.spotify?.url ? 'filter' : ''} alt="spotify" />
+                                        <a href={`https://${user.links.spotify || "open.spotify.com"}`} target="_blank" rel="noopener noreferrer">
+                                            <img src="https://res.cloudinary.com/dfsohhjfo/image/upload/v1729070081/JustDate/Assets/icons8-spotify-100_wivbcr.png" className={user.links.spotify ? 'filter' : ''} alt="spotify" />
                                         </a>
                                     </>
                                 )}
@@ -329,40 +390,51 @@ const Profile = () => {
                                     <div className="popup">
                                         <form className="popup-wrapper" onSubmit={handleSubmit}>
                                             <h2 className="heading" style={{ marginBottom: '15px' }}>Update Profile</h2>
-
                                             <div className="pagebox5 flexcol center">
-                                                <input type="text" name='firstName' autoComplete='name' placeholder='Enter your first name...' value={formValues.firstName} onChange={handleInputChange} required />
+                                                <input type="text" name='firstName' autoComplete='name' placeholder='Enter your first name...' value={formValues.firstName} onChange={handleInputChange} />
+                                                {firstNameError && <p className="error">{firstNameError.msg}</p>}
                                             </div>
                                             <div className="pagebox5 flexcol center">
-                                                <input type="text" name='lastName' autoComplete='name' placeholder='Enter your last name...' value={formValues.lastName} onChange={handleInputChange} required />
+                                                <input type="text" name='lastName' autoComplete='name' placeholder='Enter your last name...' value={formValues.lastName} onChange={handleInputChange} />
+                                                {lastNameError && <p className="error">{lastNameError.msg}</p>}
                                             </div>
                                             <div className="pagebox5 flexcol center">
-                                                <input type="text" name='interests' autoComplete='off' placeholder='Enter your interests(seprated by comma)' value={formValues.interests} onChange={handleInputChange} />
+                                                <div style={{ position: 'relative' }} className='wh'>
+                                                    <input type="text" name='interests' autoComplete='off' placeholder='Select your interests' value={searchInterests} onChange={handleInterestChange} />
+                                                    {showInterestsDropdown && filteredInterests.length > 0 && (
+                                                        <ul className='locationDropdown'>
+                                                            {filteredInterests.map((interest, index) => (
+                                                                <li key={index} onClick={() => handleSelectInterest(interest)} style={{ padding: '8px', cursor: 'pointer' }}>
+                                                                    {interest}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                </div>
+                                                <div className="selected-interests" style={ formValues?.interests?.length > 0 ? { display: 'flex' } : { display: 'none' }}>
+                                                    {formValues.interests.map((interest, index) => (
+                                                        <span key={index} className="interest-tag">
+                                                            {interest} <button type="button" onClick={() => removeInterest(index)}>×</button>
+                                                        </span>
+                                                    ))}
+                                                </div>
                                                 {interestsError && <p className="error">{interestsError.msg}</p>}
                                             </div>
                                             <div className="pagebox5 flexcol center">
-                                                <input type="text" name='imdb.url' autoComplete='off' placeholder='Enter your imdb list...' value={formValues.links?.imdb?.url} onChange={handleInputChange} />
+                                                <input type="text" name='imdb' autoComplete='off' placeholder='Enter your imdb list...' value={formValues.links?.imdb} onChange={handleInputChange} />
                                                 {imdbError && <p className="error">{imdbError.msg}</p>}
                                             </div>
                                             <div className="pagebox5 flexcol center">
-                                                <input type="text" name='insta.url' autoComplete='username' placeholder='Share your instagram handle...' value={formValues.links?.insta?.url} onChange={handleInputChange} />
+                                                <input type="text" name='insta' autoComplete='username' placeholder='Share your instagram handle...' value={formValues.links?.insta} onChange={handleInputChange} />
                                                 {instaError && <p className="error">{instaError.msg}</p>}
                                             </div>
                                             <div className="pagebox5 flexcol center">
-                                                <input type="text" name='twitter.url' autoComplete='username' placeholder='Share your twitter handle...' value={formValues.links?.twitter?.url} onChange={handleInputChange} />
+                                                <input type="text" name='twitter' autoComplete='username' placeholder='Share your twitter handle...' value={formValues.links?.twitter} onChange={handleInputChange} />
                                                 {twitterError && <p className="error">{twitterError.msg}</p>}
                                             </div>
                                             <div className="pagebox5 flexcol center">
-                                                <input type="text" name='spotify.url' autoComplete='off' placeholder='Share your fav playlist...' value={formValues.links?.spotify?.url} onChange={handleInputChange} />
+                                                <input type="text" name='spotify' autoComplete='off' placeholder='Share your fav playlist...' value={formValues.links?.spotify} onChange={handleInputChange} />
                                                 {spotifyError && <p className="error">{spotifyError.msg}</p>}
-                                            </div>
-                                            <div className="pagebox5 flex center-start">
-                                                <input type="checkbox" name='imdb.isPublic' checked={formValues.links?.imdb?.isPublic} onChange={handleInputChange} /> <div className="text">Public(IMDb)</div>
-                                                <input type="checkbox" name='insta.isPublic' checked={formValues.links?.insta?.isPublic} onChange={handleInputChange} /> <div className="text">Public(Insta)</div>
-                                            </div>
-                                            <div className="pagebox5 flex center-start">
-                                                <input type="checkbox" name='twitter.isPublic' checked={formValues.links?.twitter?.isPublic} onChange={handleInputChange} /> <div className="text">Public(Twitter)</div>
-                                                <input type="checkbox" name='spotify.isPublic' checked={formValues.links?.spotify?.isPublic} onChange={handleInputChange} /> <div className="text">Public(Spotify)</div>
                                             </div>
 
                                             <div className="flex center g20 wh" style={{ marginTop: '15px' }}>
@@ -377,7 +449,6 @@ const Profile = () => {
                             </div>
                         </div>
 
-
                         <h1 className="heading">Details</h1>
                         <div className="pagebox10 flexcol start-center">
                             <div className="pagebox20 flex center-space">
@@ -385,20 +456,20 @@ const Profile = () => {
                                 <p className="textBig">{details?.age ? `${details.age} Yrs` : '...'}</p>
                             </div>
                             <div className="pagebox20 flex center-space">
-                                <p className="textBig">Gender :</p>
-                                <p className="textBig">{details?.gender ? details.gender : '...'}</p>
-                            </div>
-                            <div className="pagebox20 flex center-space">
                                 <p className="textBig">Height :</p>
-                                <p className="textBig">{details?.height ? `${details.height} Inc` : '...'}</p>
+                                <p className="textBig">{details?.height ? `${details.height} Ft` : '...'}</p>
                             </div>
                             <div className="pagebox20 flex center-space">
                                 <p className="textBig">Location :</p>
                                 <p className="textBig">{details?.location ? details.location : '...'}</p>
                             </div>
                             <div className="pagebox20 flex center-space">
-                                <p className="textBig">Body Type :</p>
-                                <p className="textBig">{details?.bodyType ? details.bodyType : '...'}</p>
+                                <p className="textBig">Profession :</p>
+                                <p className="textBig">{details?.profession ? details.profession : '...'}</p>
+                            </div>
+                            <div className="pagebox20 flex center-space">
+                                <p className="textBig">Gender :</p>
+                                <p className="textBig">{details?.gender ? details.gender : '...'}</p>
                             </div>
                             <div className="pagebox20 flex center-space">
                                 <p className="textBig">Drinking :</p>
@@ -409,8 +480,28 @@ const Profile = () => {
                                 <p className="textBig">{details?.smoking ? details.smoking : '...'}</p>
                             </div>
                             <div className="pagebox20 flex center-space">
+                                <p className="textBig">Have Kids :</p>
+                                <p className="textBig">{details?.haveKids ? details.haveKids : '...'}</p>
+                            </div>
+                            <div className="pagebox20 flex center-space">
+                                <p className="textBig">Looking For :</p>
+                                <p className="textBig">{details?.lookingFor ? details.lookingFor : '...'}</p>
+                            </div>
+                            <div className="pagebox20 flex center-space">
+                                <p className="textBig">Dating Type :</p>
+                                <p className="textBig">{details?.datingType ? details.datingType : '...'}</p>
+                            </div>
+                            <div className="pagebox20 flex center-space">
                                 <p className="textBig">Relationship Status :</p>
                                 <p className="textBig">{details?.relationshipStatus ? details.relationshipStatus : '...'}</p>
+                            </div>
+                            <div className="pagebox20 flex center-space">
+                                <p className="textBig">Eating Habit :</p>
+                                <p className="textBig">{details?.eatingHabit ? details.eatingHabit : '...'}</p>
+                            </div>
+                            <div className="pagebox20 flex center-space">
+                                <p className="textBig">Body Type :</p>
+                                <p className="textBig">{details?.bodyType ? details.bodyType : '...'}</p>
                             </div>
                         </div>
                         <div className="pagebox20 flex center-start">
@@ -426,24 +517,18 @@ const Profile = () => {
                                                 {ageError && <p className="error">{ageError.msg}</p>}
                                             </div>
                                             <div className="pagebox5 flexcol center">
-                                                <select name="gender" value={detailValues.gender} onChange={handleDetailChange}>
-                                                    <option value="">Select your gender</option>
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female">Female</option>
-                                                </select>
-                                                {genderError && <p className="error">{genderError.msg}</p>}
-                                            </div>
-                                            <div className="pagebox5 flexcol center">
-                                                <input type="number" name="height" autoComplete="off" placeholder="Enter your height (in inches)" value={detailValues.height} onChange={handleDetailChange} />
+                                                <input type="number" name="height" autoComplete="off" placeholder="Enter your height (Feet.Inches e.g. 5.11 for 5 ft 11 in)" step="0.01"
+                                                    value={detailValues.height} onChange={handleDetailChange} />
                                                 {heightError && <p className="error">{heightError.msg}</p>}
                                             </div>
+
                                             <div className="pagebox5 flexcol center">
                                                 <div style={{ position: 'relative' }} className='wh'>
-                                                    <input type="text" name="location" placeholder="Enter your location" value={searchTerm}
-                                                        onChange={handleSearchChange} autoComplete="off"
+                                                    <input type="text" name="location" placeholder="Enter your location" value={searchLocation}
+                                                        onChange={handleLocationChange} autoComplete="off"
                                                     />
 
-                                                    {showDropdown && filteredLocations.length > 0 && (
+                                                    {showLocationDropdown && filteredLocations.length > 0 && (
                                                         <ul className='locationDropdown'>
                                                             {filteredLocations.map((location, index) => (
                                                                 <li key={index} onClick={() => handleSelectLocation(location)} style={{ padding: '8px', cursor: 'pointer' }}
@@ -457,14 +542,32 @@ const Profile = () => {
                                                 {locationError && <p className="error">{locationError.msg}</p>}
                                             </div>
                                             <div className="pagebox5 flexcol center">
-                                                <select name="bodyType" value={detailValues.bodyType} onChange={handleDetailChange}>
-                                                    <option value="">Select your body type</option>
-                                                    <option value="Skinny">Skinny</option>
-                                                    <option value="Average">Average</option>
-                                                    <option value="Curvy">Curvy</option>
-                                                    <option value="Healthy">Healthy</option>
+                                                <div style={{ position: 'relative' }} className='wh'>
+                                                    <input type="text" name="profession" placeholder="Enter your profession" value={searchProfession}
+                                                        onChange={handleProfessionChange} autoComplete="off"
+                                                    />
+
+                                                    {showProfessionDropdown && filteredProfessions.length > 0 && (
+                                                        <ul className='locationDropdown'>
+                                                            {filteredProfessions.map((profession, index) => (
+                                                                <li key={index} onClick={() => handleSelectProfession(profession)} style={{ padding: '8px', cursor: 'pointer' }}
+                                                                >
+                                                                    {profession}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                </div>
+                                                {professionError && <p className="error">{professionError.msg}</p>}
+                                            </div>
+
+                                            <div className="pagebox5 flexcol center">
+                                                <select name="gender" value={detailValues.gender} onChange={handleDetailChange}>
+                                                    <option value="">Select your gender</option>
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
                                                 </select>
-                                                {bodyTypeError && <p className="error">{bodyTypeError.msg}</p>}
+                                                {genderError && <p className="error">{genderError.msg}</p>}
                                             </div>
                                             <div className="pagebox5 flexcol center">
                                                 <select name="drinking" value={detailValues.drinking} onChange={handleDetailChange}>
@@ -474,6 +577,7 @@ const Profile = () => {
                                                 </select>
                                                 {drinkingError && <p className="error">{drinkingError.msg}</p>}
                                             </div>
+
                                             <div className="pagebox5 flexcol center">
                                                 <select name="smoking" value={detailValues.smoking} onChange={handleDetailChange}>
                                                     <option value="">Select smoking status</option>
@@ -483,6 +587,32 @@ const Profile = () => {
                                                 {smokingError && <p className="error">{smokingError.msg}</p>}
                                             </div>
                                             <div className="pagebox5 flexcol center">
+                                                <select name="haveKids" value={detailValues.haveKids} onChange={handleDetailChange}>
+                                                    <option value="">Do you have kids?</option>
+                                                    <option value="Yes">Yes</option>
+                                                    <option value="No">No</option>
+                                                </select>
+                                                {haveKidsError && <p className="error">{haveKidsError.msg}</p>}
+                                            </div>
+
+                                            <div className="pagebox5 flexcol center">
+                                                <select name="lookingFor" value={detailValues.lookingFor} onChange={handleDetailChange}>
+                                                    <option value="">I'm looking for</option>
+                                                    <option value="Boys">Boys</option>
+                                                    <option value="Girls">Girls</option>
+                                                </select>
+                                                {lookingForError && <p className="error">{lookingForError.msg}</p>}
+                                            </div>
+                                            <div className="pagebox5 flexcol center">
+                                                <select name="datingType" value={detailValues.datingType} onChange={handleDetailChange}>
+                                                    <option value="">Select dating type</option>
+                                                    <option value="Serious">Serious</option>
+                                                    <option value="Casual">Casual</option>
+                                                </select>
+                                                {datingTypeError && <p className="error">{datingTypeError.msg}</p>}
+                                            </div>
+
+                                            <div className="pagebox5 flexcol center">
                                                 <select name="relationshipStatus" value={detailValues.relationshipStatus} onChange={handleDetailChange}>
                                                     <option value="">Select your relationship status</option>
                                                     <option value="Single">Single</option>
@@ -490,6 +620,25 @@ const Profile = () => {
                                                     <option value="Widowed">Widowed</option>
                                                 </select>
                                                 {relationshipStatusError && <p className="error">{relationshipStatusError.msg}</p>}
+                                            </div>
+                                            <div className="pagebox5 flexcol center">
+                                                <select name="eatingHabit" value={detailValues.eatingHabit} onChange={handleDetailChange}>
+                                                    <option value="">Select your eating habit</option>
+                                                    <option value="Vegan">Vegan</option>
+                                                    <option value="Vegetarian">Vegetarian</option>
+                                                    <option value="Non-Vegetarian">Non-Vegetarian</option>
+                                                </select>
+                                                {eatingHabitError && <p className="error">{eatingHabitError.msg}</p>}
+                                            </div>
+                                            <div className="pagebox5 flexcol center">
+                                                <select name="bodyType" value={detailValues.bodyType} onChange={handleDetailChange}>
+                                                    <option value="">Select your body type</option>
+                                                    <option value="Skinny">Skinny</option>
+                                                    <option value="Average">Average</option>
+                                                    <option value="Curvy">Curvy</option>
+                                                    <option value="Healthy">Healthy</option>
+                                                </select>
+                                                {bodyTypeError && <p className="error">{bodyTypeError.msg}</p>}
                                             </div>
 
                                             <div className="flex center g20 wh" style={{ marginTop: '15px' }}>
@@ -503,57 +652,9 @@ const Profile = () => {
                                 )}
                             </div>
                         </div>
+
                     </div>
 
-                    {/* {editMode ? (
-                        <div className="subProfileTwo">
-                            <h1 className="heading">Shows</h1>
-                            <div className="flex center-space wh">
-                                <input type="text" className="searchInput" placeholder="Search shows..." value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1) }} />
-                                <button onClick={() => setEditMode(false)}>Save</button>
-                            </div>
-                            <p className='textSmol'>Showing {paginatedItems.length} out of {seriesSchema.length} shows</p>
-
-                            <div className="showGrid">
-                                {paginatedItems && paginatedItems.map((show, index) => (
-                                    <div className="showItem" key={index}>
-                                        <img
-                                            src={show.poster_url ? `${show.poster_url}` : 'https://media.istockphoto.com/id/1396814518/vector/image-coming-soon-no-photo-no-thumbnail-image-available-vector-illustration.jpg?s=612x612&w=0&k=20&c=hnh2OZgQGhf0b46-J2z7aHbIWwq8HNlSDaNp2wn_iko='}
-                                            alt={show.original_name ? show.original_name : `poster-${index}`}
-                                        />
-                                        <p className='textSmol'>{show.original_name ? show.original_name : `Unknown`}</p>
-                                    </div>
-                                ))}
-                            </div>
-                            {total_results > pageSize && (
-                                <div className="pagination">
-                                    <button disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}>
-                                        Previous
-                                    </button>
-                                    <span>{`Page ${currentPage} of ${total_pages}`}</span>
-                                    <button disabled={currentPage === total_pages} onClick={() => handlePageChange(currentPage + 1)}>
-                                        Next
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    ) : (
-                        <div className="subProfileTwo">
-                            <h1 className="heading">Your top 10</h1>
-                            <div className="showGrid">
-                                {paginatedItems && paginatedItems.map((show, index) => (
-                                    <div className="showItem" key={index}>
-                                        <img
-                                            src={show.poster_url ? `${show.poster_url}` : 'https://media.istockphoto.com/id/1396814518/vector/image-coming-soon-no-photo-no-thumbnail-image-available-vector-illustration.jpg?s=612x612&w=0&k=20&c=hnh2OZgQGhf0b46-J2z7aHbIWwq8HNlSDaNp2wn_iko='}
-                                            alt={show.original_name ? show.original_name : `poster-${index}`}
-                                        />
-                                        <p className='textSmol'>{show.original_name ? show.original_name : `Unknown`}</p>
-                                    </div>
-                                ))}
-                            </div>
-                            <button onClick={() => setEditMode(true)}>Edit</button>
-                        </div>
-                    )} */}
                 </div>
             </div>
         </Fragment>
