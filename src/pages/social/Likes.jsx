@@ -4,6 +4,7 @@ import { showToast } from '../../components/Schema';
 import { useDispatch, useSelector } from 'react-redux';
 import { likeUser, getLikeUser } from '../../slices/socialSlice';
 
+import Loader from '../../components/Loader/Loader';
 import HeightIcon from '@mui/icons-material/Height';
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import CakeIcon from '@mui/icons-material/Cake';
@@ -36,7 +37,7 @@ const Likes = () => {
         if (!liked[personId]) {
             try {
                 const response = await dispatch(likeUser({ likedUserId: personId })).unwrap();
-                if (response.status === "success") {
+                if (response.status) {
                     setLiked((prev) => ({ ...prev, [personId]: true }));
                     showToast('success', `${response.message}`);
                 } else {
@@ -48,6 +49,9 @@ const Likes = () => {
         }
     };
 
+    if (likeLoading) {
+        return <Loader />;
+    }
 
     return (
         <Fragment>
@@ -59,16 +63,12 @@ const Likes = () => {
             <div className='page flexcol wh'>
                 <h1 className="heading">Likes</h1>
 
-                {likeLoading && <p>Loading...</p>}
-                {likeError && <p>{likeError}</p>}
-
                 <div className="discoverGrid">
-
-                    {!likeLoading && !likeError && likeusers?.length > 0 ? likeusers.map((person) => (
+                    {likeError ? (<p className='text'>Error loading users!</p>) : !likeLoading && !likeError && likeusers && likeusers.length > 0 ? likeusers.map((person) => (
                         <div className="disGridItem" key={person._id}>
                             <p className='textBig'>{person.firstName} {person.lastName}</p>
                             <div className="interestsTwo">
-                                {person.interests?.split(',').map((interest, index) => (
+                                {person.interests?.map((interest, index) => (
                                     <p key={index} className="text">{interest.trim() || '...'}</p>
                                 ))}
                             </div>
@@ -84,7 +84,6 @@ const Likes = () => {
                             </div>
                         </div>
                     )) : (<p className='text'>You have no likes yet!</p>)}
-
                 </div>
             </div>
         </Fragment>

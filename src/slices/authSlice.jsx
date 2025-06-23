@@ -362,7 +362,7 @@ const authSlice = createSlice({
                 if (Array.isArray(action.payload)) {
                     state.upError = action.payload;
                 } else {
-                    state.upGenErrors = action.payload?.message || "Unknown error occurred";
+                    state.upGenErrors = action.payload?.message || "Unknown error occurred!";
                 }
             })
 
@@ -394,7 +394,7 @@ const authSlice = createSlice({
                 if (Array.isArray(action.payload)) {
                     state.detError = action.payload;
                 } else {
-                    state.detGenErrors = action.payload?.message || "Unknown error occurred";
+                    state.detGenErrors = action.payload?.message || "Unknown error occurred!";
                 }
             })
     }
